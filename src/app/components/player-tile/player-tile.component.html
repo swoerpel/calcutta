@@ -1,0 +1,16 @@
+<div class="title-row">
+    <div class="player-name">
+        {{player.firstName}} {{player.lastName}}
+    </div>
+    <div class="player-data">
+        ${{player.currentBetPrice}}
+    </div>
+</div>
+<div class="bet-value-row">
+    <button mat-raised-button class="bet-value-row-element"  color="accent">Max</button>
+    <input matInput class="bet-value-row-element bet-value-row-element_input" placeholder="$0"/>
+    <button mat-raised-button class="bet-value-row-element"  color="accent">+$5</button>
+</div>
+<div class="bet-button-row">
+    <button mat-raised-button color="accent" class="bet-button">place bet</button>
+</div>

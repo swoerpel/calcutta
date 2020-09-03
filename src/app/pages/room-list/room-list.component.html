@@ -1,0 +1,21 @@
+<mat-card class="container">
+    <mat-card-title class="title">
+        Room List
+    </mat-card-title>
+    <mat-card-content class="room-search-wrapper">
+        <mat-form-field class="room-search" appearance="outline">
+            <mat-label>Search Rooms</mat-label>
+            <input matInput [(ngModel)]="filterRoom" placeholder="room name"/>
+        </mat-form-field>
+    </mat-card-content>
+    <mat-card-content>
+        <mat-selection-list [multiple]="false">
+            <mat-list-option *ngFor="let room of roomListService.rooms | filterByKey:filterRoom :'name'" 
+                             (click)="onSelectRoom(room.id)"
+                             [value]="room" 
+                             class="room-list-item">
+              {{room.name}}
+            </mat-list-option>
+          </mat-selection-list>
+    </mat-card-content>
+</mat-card>

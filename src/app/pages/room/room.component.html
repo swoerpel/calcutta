@@ -1,0 +1,10 @@
+<div *ngIf="(currentRoom | async) as room" class="container">
+    <div class="title">
+        {{room.name + ' Player List'}} 
+    </div>
+    <mat-form-field appearance="outline">
+        <mat-label>Search Players</mat-label>
+        <input matInput [(ngModel)]="filterPlayer" placeholder="player name" class="search-input"/>
+    </mat-form-field>
+    <player-tile *ngFor="let player of room.players | filterByKey:filterPlayer :'firstName'"  [player]="player"></player-tile>
+</div>

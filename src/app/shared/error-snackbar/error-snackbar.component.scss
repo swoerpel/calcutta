@@ -1,0 +1,17 @@
+.title{
+    color: red;
+    font-weight: 300;
+}
+.subtitle{
+    &__success {
+        color: green;
+        font-weight: 500;
+    }
+
+    &__error {
+        color: red;
+        font-weight: 500;
+    }
+    
+    
+}

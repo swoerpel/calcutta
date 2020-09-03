@@ -1,0 +1,15 @@
+<mat-toolbar color="primary">
+    <mat-toolbar-row>
+        <span class="home-button" (click)="navigateHome()">Calcutta</span>
+        <span class="example-spacer"></span>
+        <mat-icon *ngIf="userIsAdmin" 
+                  (click)="createRoom()"
+                  class="example-icon" 
+                  aria-hidden="false" 
+                  aria-label="Example house icon">
+            wrench
+        </mat-icon>
+
+        <mat-icon (click)="logout()"class="example-icon" aria-hidden="false" aria-label="Example delete icon">logout</mat-icon>
+    </mat-toolbar-row>
+</mat-toolbar>
