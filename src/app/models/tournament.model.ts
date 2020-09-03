@@ -1,6 +1,6 @@
 import { Player } from './player.model';
 
-export interface Room {
+export interface Tournament {
     name: string;
     id: string;
     players: Player[];

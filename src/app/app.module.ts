@@ -15,18 +15,18 @@ import { PlayerTileComponent } from './components/player-tile/player-tile.compon
 import { LoginPageComponent } from './pages/login/login-page.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './modules/material-module';
-import { RoomComponent } from './pages/room/room.component';
-import { RoomListComponent } from './pages/room-list/room-list.component';
+import { TournamentComponent } from './pages/tournament/tournament.component';
+import { TournamentListComponent } from './pages/tournament-list/tournament-list.component';
 import { FilterObjectsModule } from './pipes/filter-objects/filter-objects.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RoomListService } from './services/room-list.service';
+import { TournamentListService } from './services/tournament-list.service';
 import { AuthService } from './services/auth.service';
 import { AuthGuard } from './services/auth-guard/auth-guard.service';
 import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
 import { SnackbarErrorComponent} from './shared/error-snackbar/error-snackbar.component';
-import { CreateRoomComponent } from './pages/create-room/create-room.component';
+import { CreateTournamentComponent } from './pages/create-tournament/create-tournament.component';
 
-// create room - admin
+// create tournament - admin
 import { TimeControlComponent } from './components/time-control/time-control.component';
 import { PlayerControlComponent } from './components/player-control/player-control.component';
 
@@ -36,11 +36,11 @@ import { PlayerControlComponent } from './components/player-control/player-contr
     HeaderComponent,
     FooterComponent,
     LoginPageComponent,
-    RoomListComponent,
-    RoomComponent,
+    TournamentListComponent,
+    TournamentComponent,
     PlayerTileComponent,
     SnackbarErrorComponent,
-    CreateRoomComponent,
+    CreateTournamentComponent,
     TimeControlComponent,
     PlayerControlComponent,
   ],
@@ -60,7 +60,7 @@ import { PlayerControlComponent } from './components/player-control/player-contr
   providers: [
     AuthService,
     AuthGuard,
-    RoomListService
+    TournamentListService
   ],
   bootstrap: [AppComponent]
 })

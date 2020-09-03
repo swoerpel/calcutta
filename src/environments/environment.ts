@@ -15,7 +15,7 @@ export const environment = {
   },
   firebase_auth: {
     authGuardFallbackURL: 'login',
-    authGuardLoggedInURL: 'rooms-list',
+    authGuardLoggedInURL: 'tournament-list',
     guardProtectedRoutesUntilEmailIsVerified: false,
     enableEmailVerification: false, 
     passwordMinLength: 8

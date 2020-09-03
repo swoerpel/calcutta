@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Room } from '../models/room.model';
+import { Tournament } from '../models/tournament.model';
 import * as faker from '../../../node_modules/faker/dist/faker';
 import { Player } from '../models/player.model';
 
@@ -8,37 +8,37 @@ import { Player } from '../models/player.model';
 })
 
 
-export class RoomListService {
+export class TournamentListService {
 
 
-    public readonly rooms: Room[] = [
+    public readonly tournaments: Tournament[] = [
         {
-            name: 'Room A',
+            name: 'Tournament A',
             id: '111111',
             players: this.generatePlayers(),
         },
         {
-            name: 'Room B',
+            name: 'Tournament B',
             id: '111112',
             players: this.generatePlayers(),
         },
         {
-            name: 'Room C',
+            name: 'Tournament C',
             id: '111113',
             players: this.generatePlayers(),
         },
         {
-            name: 'Room D',
+            name: 'Tournament D',
             id: '111114',
             players: this.generatePlayers(),
         },
         {
-            name: 'Room E',
+            name: 'Tournament E',
             id: '111115',
             players: this.generatePlayers(),
         },
         {
-            name: 'Room F',
+            name: 'Tournament F',
             id: '111116',
             players: this.generatePlayers(),
         },

@@ -1,10 +1,9 @@
-<div *ngIf="currentRoom" class="container">
-<!-- <div *ngIf="(currentRoom | async) as room" class="container"> -->
+<div *ngIf="currentTournament" class="container">
     <div class="title">
-        Create New Room 
+        Create New Tournament
     </div>
     <mat-form-field appearance="outline">
-        <mat-label>RoomName</mat-label>
+        <mat-label>Tournament Name</mat-label>
         <input matInput [(ngModel)]="filterPlayer" placeholder="player name" class="search-input"/>
     </mat-form-field>
     <time-control></time-control>
@@ -13,7 +12,7 @@
 
     <!-- <button mat-raised-button color="accent" class="bet-button">Create Player</button> -->
 <!-- 
-    <div *ngFor="let player of currentRoom.players" >
+    <div *ngFor="let player of currentTournament.players" >
         {{player.firstName}}
     </div> -->
 </div>

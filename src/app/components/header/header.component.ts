@@ -31,11 +31,11 @@ export class HeaderComponent implements OnInit {
     }
 
     public navigateHome(){
-        this.router.navigate(['/room-list']);
+        this.router.navigate(['/tournament-list']);
     }
 
-    public createRoom(){
-        this.router.navigate(['/create-room']);
+    public createTournament(){
+        this.router.navigate(['/create-tournament']);
     }
 
 }

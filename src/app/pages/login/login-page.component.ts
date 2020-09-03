@@ -48,7 +48,7 @@ export class LoginPageComponent implements OnInit {
     }
 
     public onLogin($event){
-        this.router.navigate(['/room-list']);
+        this.router.navigate(['/tournament-list']);
     }
 
     public toggleDisplay(){
@@ -64,7 +64,7 @@ export class LoginPageComponent implements OnInit {
             ).pipe(
                 tap(res => {
                     this.displaySnackbar(res);
-                    this.router.navigate(['/room-list']);
+                    this.router.navigate(['/tournament-list']);
                 }),
                 catchError(err => {
                     this.displaySnackbar(err);
@@ -78,7 +78,7 @@ export class LoginPageComponent implements OnInit {
             ).pipe(
                 tap(res => {
                     this.displaySnackbar(res);
-                    this.router.navigate(['/room-list']);
+                    this.router.navigate(['/tournament-list']);
                 }),
                 catchError(err => {
                     this.displaySnackbar(err);
