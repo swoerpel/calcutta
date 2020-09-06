@@ -1,7 +1,10 @@
 import { Player } from './player.model';
 
 export interface Tournament {
+    id?: string;
     name: string;
-    id: string;
+    roomName: string;
+    endTime: string;
+    duration?: string;
     players: Player[];
 }

@@ -1,18 +1,83 @@
-<div *ngIf="currentTournament" class="container">
-    <div class="title">
-        Create New Tournament
-    </div>
+<div class="section section__tournament-input">
+    <div class="title">        {{tournamentFormGroup.controls.id.value === 'new-tournament' ? 'Create' : 'Update'}} Tournament</div>
     <mat-form-field appearance="outline">
         <mat-label>Tournament Name</mat-label>
-        <input matInput [(ngModel)]="filterPlayer" placeholder="player name" class="search-input"/>
+        <input [formControl]="tournamentFormGroup.controls.name" 
+                matInput
+                placeholder="player name"/>
     </mat-form-field>
-    <time-control></time-control>
-    
-    <player-control></player-control>
-
-    <!-- <button mat-raised-button color="accent" class="bet-button">Create Player</button> -->
-<!-- 
-    <div *ngFor="let player of currentTournament.players" >
-        {{player.firstName}}
-    </div> -->
+    <mat-form-field appearance="outline">
+        <mat-label>Room Name</mat-label>
+        <input [formControl]="tournamentFormGroup.controls.roomName" 
+                matInput
+                placeholder="room name"/>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>End Time:</mat-label>
+            <input [ngxTimepicker]="endTime" 
+                    [formControl]="tournamentFormGroup.controls.endTime"
+                    placeholder="00:00" 
+                    aria-label="12hr format"  
+                    matInput
+                    readonly>
+            <ngx-material-timepicker #endTime></ngx-material-timepicker>
+    </mat-form-field>
 </div>
+
+<div class="section section__player-input" >
+    <div class="title">Add Player</div>
+    <mat-form-field appearance="outline">
+        <mat-label>First Name</mat-label>
+        <input [formControl]="playerFormGroup.controls.firstName" 
+               matInput 
+               placeholder="first name"/>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>Last Name</mat-label>
+        <input [formControl]="playerFormGroup.controls.lastName"
+               matInput 
+               placeholder="last name"/>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>Fargo</mat-label>
+        <input [formControl]="playerFormGroup.controls.fargoRating" 
+               matInput 
+               placeholder="fargo rating"/>
+        <mat-error *ngIf="playerFormGroup.controls.fargoRating.hasError('pattern')">
+            please enter a number
+        </mat-error>
+        <mat-error *ngIf="playerFormGroup.controls.fargoRating.hasError('min')">
+            Must be {{fargoRating.min}} or above
+        </mat-error>
+        <mat-error *ngIf="playerFormGroup.controls.fargoRating.hasError('max')">
+            Must be {{fargoRating.max}} or below
+        </mat-error>
+    </mat-form-field>
+</div>
+<div class="section section__button-group" >
+    <button (click)="addPlayer()" mat-raised-button [disabled]="this.playerFormGroup.invalid">Add</button>
+    <button (click)="updatePlayer()" mat-raised-button [disabled]="this.playerFormGroup.invalid">update</button>
+    <button (click)="deletePlayer()" mat-raised-button [disabled]="this.playerFormGroup.invalid">delete</button>
+</div>
+
+<div class="section section__player-list">
+    <div class="title">Player List</div>
+    <div class="subtitle" *ngIf="currentPlayers.length !== 0">{{selectedPlayer.firstName}} {{selectedPlayer.lastName}}</div>
+    <mat-selection-list [multiple]="false">
+        <mat-list-option *ngFor="let player of currentPlayers"
+                         (click)="onSelectPlayer(player)"
+                         [value]="player" 
+                         class="player-list-item">
+          {{player.firstName}}
+        </mat-list-option>
+    </mat-selection-list>
+</div>
+
+<footer class="footer">
+    <button (click)="tournamentFormGroup.controls.id.value === 'new-tournament' ? createTournament() : updateTournament()" 
+            [disabled]="tournamentFormGroup.controls.name.invalid || tournamentFormGroup.controls.endTime.invalid"
+            mat-raised-button>
+        {{tournamentFormGroup.controls.id.value === 'new-tournament' ? 'Create Tournament' : 'Update Tournament'}}
+    </button>
+</footer>
+

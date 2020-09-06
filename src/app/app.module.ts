@@ -13,6 +13,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { PlayerTileComponent } from './components/player-tile/player-tile.component';
 import { LoginPageComponent } from './pages/login/login-page.component';
+import { SettingsPageComponent } from './pages/settings/settings.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './modules/material-module';
 import { TournamentComponent } from './pages/tournament/tournament.component';
@@ -26,23 +27,18 @@ import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
 import { SnackbarErrorComponent} from './shared/error-snackbar/error-snackbar.component';
 import { CreateTournamentComponent } from './pages/create-tournament/create-tournament.component';
 
-// create tournament - admin
-import { TimeControlComponent } from './components/time-control/time-control.component';
-import { PlayerControlComponent } from './components/player-control/player-control.component';
-
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     FooterComponent,
     LoginPageComponent,
+    SettingsPageComponent,  
     TournamentListComponent,
     TournamentComponent,
     PlayerTileComponent,
     SnackbarErrorComponent,
     CreateTournamentComponent,
-    TimeControlComponent,
-    PlayerControlComponent,
   ],
   imports: [
     BrowserModule,

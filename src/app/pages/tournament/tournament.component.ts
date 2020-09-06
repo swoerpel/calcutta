@@ -21,10 +21,9 @@ export class TournamentComponent implements OnInit {
     ) {}
 
     ngOnInit(){
-        console.log(this.route.params)
         this.currentTournament = this.route.params.pipe(
             map(d => this.tournamentListService.tournaments.find(r => r.id === d.tournament_id))
         )
-        console.log(this.tournamentListService.tournaments)
+        console.log(this.currentTournament)
     }
 }

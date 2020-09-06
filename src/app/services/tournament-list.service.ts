@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Tournament } from '../models/tournament.model';
 import * as faker from '../../../node_modules/faker/dist/faker';
 import { Player } from '../models/player.model';
-
+import { makeId } from '../shared/helpers';
 @Injectable({
     providedIn: 'root'
 })
@@ -10,36 +10,12 @@ import { Player } from '../models/player.model';
 
 export class TournamentListService {
 
-
-    public readonly tournaments: Tournament[] = [
+    public tournaments: Tournament[] = [
         {
+            id: makeId(),
             name: 'Tournament A',
-            id: '111111',
-            players: this.generatePlayers(),
-        },
-        {
-            name: 'Tournament B',
-            id: '111112',
-            players: this.generatePlayers(),
-        },
-        {
-            name: 'Tournament C',
-            id: '111113',
-            players: this.generatePlayers(),
-        },
-        {
-            name: 'Tournament D',
-            id: '111114',
-            players: this.generatePlayers(),
-        },
-        {
-            name: 'Tournament E',
-            id: '111115',
-            players: this.generatePlayers(),
-        },
-        {
-            name: 'Tournament F',
-            id: '111116',
+            roomName: 'Ball Room',
+            endTime: '06:00',
             players: this.generatePlayers(),
         },
     ]
@@ -53,9 +29,32 @@ export class TournamentListService {
                 lastName: faker.name.lastName(),
                 id: index.toString(),
                 currentBetPrice: Math.floor(Math.random() * 100),
+                fargoRating: Math.floor(Math.random() * 500) + 300
             }
         })
         
     }
 
+    public createTournament(tournament: Tournament): string{
+        let idExists = true;
+        let id;
+        while(idExists){
+            id = makeId();
+            idExists = this.tournaments.find(t => t.id == id) === null
+        }
+        this.tournaments.push({...tournament, id: id})
+        return id;
+    }
+
+    public updateTournament(tournament: Tournament): void{
+        this.tournaments = this.tournaments.map(t => {
+            if(t.id === tournament.id){
+                return tournament;
+            }
+            return t;
+        });
+    }
+
 }
+
+

@@ -1,16 +1,27 @@
-<div class="title-row">
-    <div class="player-name">
-        {{player.firstName}} {{player.lastName}}
+<div class="row row__information">
+    <div class="col col__player">
+        <div class="col col__player col__title">{{player.firstName}} {{player.lastName}}</div>
+        <div class="col col__player col__subtitle">Fargo Rating: {{player.fargoRating}}</div>
     </div>
-    <div class="player-data">
-        ${{player.currentBetPrice}}
+    <div class="col col__betting">
+        <div class="col col__betting col__title">${{player.currentBetPrice}}</div>
+        <div class="col col__betting col__subtitle">{{topBidder.firstName}} {{topBidder.lastName}}</div>
+    </div>
+    <div class="col col__betting">
+        <div class="col col__betting col__title">${{player.currentBetPrice - 5}}</div>
+        <div class="col col__betting col__subtitle">Max: ${{player.currentBetPrice + 10}}</div>
     </div>
 </div>
-<div class="bet-value-row">
-    <button mat-raised-button class="bet-value-row-element"  color="accent">Max</button>
-    <input matInput class="bet-value-row-element bet-value-row-element_input" placeholder="$0"/>
-    <button mat-raised-button class="bet-value-row-element"  color="accent">+$5</button>
+<div class="row row__input">
+    <div class="col col__input">
+        <input type="text" class="bet bet__input" placeholder="$0">
+    </div>
+    <div class="col col__button">
+        <button class="bet bet__button">Place Bet</button>
+    </div>
+    <div class="col col__button">
+        <button class="bet bet__button">Set Max</button>
+    </div>
 </div>
-<div class="bet-button-row">
-    <button mat-raised-button color="accent" class="bet-button">place bet</button>
-</div>
+
+

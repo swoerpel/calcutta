@@ -1,0 +1,60 @@
+:host {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title{ 
+    font-size: 2.5rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.subtitle{ 
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    // padding-right: 3rem;
+    flex:3;
+
+    &__label {
+        flex: 2;
+        text-transform: uppercase;
+    }
+}
+
+.row{
+    display: flex;
+    justify-content: flex-start;
+    &__button{
+        margin: 1rem 0;
+        justify-content: center;
+    }
+}
+
+
+.section {
+    display: flex;
+    width: 80%;
+    margin-bottom: 1rem;
+    flex-direction: column;
+    justify-content: flex-start;
+    font-weight: 300;
+}
+
+.button{
+    
+    width: 80%;
+    &__reset{
+        background-color: gold;
+    }
+
+    &__delete-account{
+        background-color: orangered;
+        color: white;
+        
+    }
+    &:active{
+        transform: translateY(3px);
+    }
+}

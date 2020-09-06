@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { tap } from 'rxjs/operators';
 
@@ -13,6 +13,7 @@ export class HeaderComponent implements OnInit {
     public userIsAdmin: boolean = true;
     
     constructor(
+        private route: ActivatedRoute,
         private router: Router,
         private auth: AuthService,
     ) {}
@@ -34,8 +35,15 @@ export class HeaderComponent implements OnInit {
         this.router.navigate(['/tournament-list']);
     }
 
+    public navigateSettings(){
+        this.router.navigate(['/settings'])
+    }
+
     public createTournament(){
-        this.router.navigate(['/create-tournament']);
+        let tournament_id = this.router.routerState.snapshot.url.split('/')[2];
+        if(!tournament_id)
+            tournament_id = 'new-tournament'
+        this.router.navigate(['/create-tournament/' + tournament_id]);
     }
 
 }
