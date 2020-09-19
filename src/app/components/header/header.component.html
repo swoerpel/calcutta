@@ -2,16 +2,26 @@
     <mat-toolbar-row>
         <span class="home-button" (click)="navigateHome()">Calcutta</span>
         <span class="example-spacer"></span>
-        <mat-icon *ngIf="userIsAdmin" 
-                  (click)="createTournament()"
-                  class="example-icon" 
-                  aria-hidden="false" 
-                  aria-label="Example house icon">
-            construction
-        </mat-icon>
+
         <!-- <span class="example-spacer"></span> -->
-        <mat-icon (click)="navigateSettings()" class="example-icon">settings</mat-icon>
-        <mat-icon (click)="navigateHome()" class="example-icon">home</mat-icon>
-        <mat-icon (click)="logout()"class="example-icon" aria-hidden="false" aria-label="Example delete icon">logout</mat-icon>
+        <ng-container *ngIf="!(beforeLogin | async)">
+            <mat-icon *ngIf="(isAdmin | async)" 
+            (click)="openPlayerList()"
+            class="example-icon" 
+            aria-hidden="false" 
+            aria-label="Example person icon">
+                person
+            </mat-icon>
+            <mat-icon *ngIf="(isAdmin | async)" 
+            (click)="createTournament()"
+            class="example-icon" 
+            aria-hidden="false" 
+            aria-label="Example house icon">
+                construction
+            </mat-icon>
+            <mat-icon (click)="navigateSettings()" class="example-icon">settings</mat-icon>
+            <mat-icon (click)="navigateHome()" class="example-icon">home</mat-icon>
+            <mat-icon (click)="logout()"class="example-icon" aria-hidden="false" aria-label="Example delete icon">logout</mat-icon>
+        </ng-container>
     </mat-toolbar-row>
 </mat-toolbar>

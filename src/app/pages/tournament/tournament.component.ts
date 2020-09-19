@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable,  } from 'rxjs';
 import { map  } from 'rxjs/operators';
-import { TournamentListService } from 'src/app/services/tournament-list.service';
 import { Tournament } from 'src/app/models/tournament.model';
+import { Store } from '@ngrx/store';
+import { TournamentState } from 'src/app/state/tournament/tournament.reducer';
+import { GetTournament } from 'src/app/state/tournament/tournament.selectors';
 
 @Component({
     selector: 'app-tournament',
@@ -13,17 +15,14 @@ import { Tournament } from 'src/app/models/tournament.model';
 export class TournamentComponent implements OnInit {
 
     public filterPlayer:string;
-    public currentTournament: Observable<Tournament>;
+    public tournament: Observable<Tournament>;
 
     constructor(
         private route: ActivatedRoute,
-        public tournamentListService: TournamentListService,
+        private tournamentStore: Store<TournamentState>,
     ) {}
 
     ngOnInit(){
-        this.currentTournament = this.route.params.pipe(
-            map(d => this.tournamentListService.tournaments.find(r => r.id === d.tournament_id))
-        )
-        console.log(this.currentTournament)
+        this.tournament = this.tournamentStore.select(GetTournament)
     }
 }

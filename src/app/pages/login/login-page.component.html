@@ -1,6 +1,14 @@
 <mat-card class="container">
     <mat-card-content>
       <form class="login-form">
+          <mat-form-field *ngIf="!displayLogin" class="login-input" appearance="outline">
+            <mat-label>First Name</mat-label>
+            <input [formControl]="authFormGroup.controls.firstName" matInput placeholder="first name"/>
+          </mat-form-field>
+          <mat-form-field *ngIf="!displayLogin" class="login-input" appearance="outline">
+            <mat-label>Last Name</mat-label>
+            <input [formControl]="authFormGroup.controls.lastName" matInput placeholder="last name"/>
+          </mat-form-field>
           <mat-form-field class="login-input" appearance="outline">
             <mat-label>Email</mat-label>
             <input [formControl]="authFormGroup.controls.email" matInput placeholder="email"/>

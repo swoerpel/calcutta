@@ -6,6 +6,7 @@ import { TournamentComponent } from './pages/tournament/tournament.component';
 import {LoggedInGuard} from 'ngx-auth-firebaseui';
 import { CreateTournamentComponent } from './pages/create-tournament/create-tournament.component';
 import { SettingsPageComponent } from './pages/settings/settings.component';
+import { PlayerListComponent } from './pages/player-list/player-list.component';
 
 const routes: Routes = [
   {
@@ -15,6 +16,7 @@ const routes: Routes = [
   },
   {path: 'login', component: LoginPageComponent},
   {path: 'settings', component: SettingsPageComponent, canActivate: [LoggedInGuard]},
+  {path: 'player-list', component: PlayerListComponent, canActivate: [LoggedInGuard]},
   {path: 'tournament-list', component: TournamentListComponent, canActivate: [LoggedInGuard]},
   {path: 'tournament-list/:tournament_id', component: TournamentComponent, canActivate: [LoggedInGuard]},
   {path: 'create-tournament/:tournament_id', component: CreateTournamentComponent, canActivate: [LoggedInGuard]},

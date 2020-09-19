@@ -1,28 +1,3 @@
-<div class="section section__tournament-input">
-    <div class="title">{{tournamentFormGroup.controls.id.value === 'new-tournament' ? 'Create' : 'Update'}} Tournament</div>
-    <mat-form-field appearance="outline">
-        <mat-label>Tournament Name</mat-label>
-        <input [formControl]="tournamentFormGroup.controls.name" 
-                matInput
-                placeholder="player name"/>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-        <mat-label>Room Name</mat-label>
-        <input [formControl]="tournamentFormGroup.controls.roomName" 
-                matInput
-                placeholder="room name"/>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-        <mat-label>End Time:</mat-label>
-            <input [ngxTimepicker]="endTime" 
-                    [formControl]="tournamentFormGroup.controls.endTime"
-                    placeholder="00:00" 
-                    aria-label="12hr format"  
-                    matInput
-                    readonly>
-            <ngx-material-timepicker #endTime></ngx-material-timepicker>
-    </mat-form-field>
-</div>
 
 <div class="section section__player-input" >
     <div class="title">Add Player</div>
@@ -55,16 +30,16 @@
     </mat-form-field>
 </div>
 <div class="section section__button-group" >
-    <button (click)="addPlayer()" mat-raised-button [disabled]="this.playerFormGroup.invalid">Add</button>
+    <button (click)="createPlayer()" mat-raised-button [disabled]="this.playerFormGroup.invalid">Add</button>
     <button (click)="updatePlayer()" mat-raised-button [disabled]="this.playerFormGroup.invalid">update</button>
     <button (click)="deletePlayer()" mat-raised-button [disabled]="this.playerFormGroup.invalid">delete</button>
 </div>
 
 <div class="section section__player-list">
     <div class="title">Player List</div>
-    <div class="subtitle" *ngIf="currentPlayers.length !== 0">{{selectedPlayer.firstName}} {{selectedPlayer.lastName}}</div>
+    <div class="subtitle" *ngIf="(players | async)?.length !== 0">{{selectedPlayer.firstName}} {{selectedPlayer.lastName}}</div>
     <mat-selection-list [multiple]="false">
-        <mat-list-option *ngFor="let player of currentPlayers"
+        <mat-list-option *ngFor="let player of (players | async)"
                          (click)="onSelectPlayer(player)"
                          [value]="player" 
                          class="player-list-item">
@@ -72,12 +47,4 @@
         </mat-list-option>
     </mat-selection-list>
 </div>
-
-<footer class="footer">
-    <button (click)="tournamentFormGroup.controls.id.value === 'new-tournament' ? createTournament() : updateTournament()" 
-            [disabled]="tournamentFormGroup.controls.name.invalid || tournamentFormGroup.controls.endTime.invalid"
-            mat-raised-button>
-        {{tournamentFormGroup.controls.id.value === 'new-tournament' ? 'Create Tournament' : 'Update Tournament'}}
-    </button>
-</footer>
 

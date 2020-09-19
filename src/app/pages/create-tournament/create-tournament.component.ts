@@ -1,11 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { TournamentListService } from 'src/app/services/tournament-list.service';
 import { Tournament } from 'src/app/models/tournament.model';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { tap } from 'rxjs/operators';
+import { tap, map, first } from 'rxjs/operators';
 import * as moment from 'moment';
 import { Player } from 'src/app/models/player.model';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
+import { TournamentState } from 'src/app/state/tournament/tournament.reducer';
+import { Store } from '@ngrx/store';
+import { TournamentPageActions } from 'src/app/state/tournament/actions';
 
 
 @Component({
@@ -35,11 +39,11 @@ export class CreateTournamentComponent implements OnInit {
     };
 
     public tournamentFormGroup = new FormGroup({
-        name: new FormControl('', [Validators.required,]),
-        roomName: new FormControl('', [Validators.required,]),
-        endTime: new FormControl('', [Validators.required,]),
+        name: new FormControl('big huge tournament', [Validators.required,]),
+        roomName: new FormControl('ball room', [Validators.required,]),
+        endTime: new FormControl('12:00 AM', [Validators.required,]),
         duration: new FormControl('', [Validators.required,]),
-        id: new FormControl('', [Validators.required,]),
+        id: new FormControl('new-tournament', [Validators.required,]),
     }) 
 
     public playerFormGroup = new FormGroup({
@@ -52,32 +56,17 @@ export class CreateTournamentComponent implements OnInit {
             Validators.max(this.fargoRating.max),
         ]),
     });
+
+    public tournaments: Observable<Tournament[]>;
     
     constructor(
         private router: Router,
-        public tournamentListService:TournamentListService,
+        // public tournamentListService:TournamentListService,
+        private db: AngularFirestore,
+        private tournamentStore: Store<TournamentState>
     ) {}
-
     
     ngOnInit(){
-        this.setupTimeInputListener();
-
-        // this.shirts = db.collection('tshirts').valueChanges();
-        // this._db = db;
-
-
-        let tournamentId = this.router.routerState.snapshot.url.split('/')[2];
-        this.tournamentFormGroup.patchValue({id: tournamentId})
-        if(tournamentId !== "new-tournament"){
-            const tournament = this.tournamentListService.tournaments.find(t => t.id === tournamentId);
-            this.tournamentFormGroup.patchValue({
-                ...tournament,
-            })
-            this.currentPlayers = [...tournament.players];
-        }
-    }
-
-    public setupTimeInputListener(){
         this.tournamentFormGroup.controls.endTime.valueChanges.pipe(
             tap((endTimeValue) => {
                 let endTime = moment(endTimeValue, ["hh:mm A"]).format("HH:mm");
@@ -86,6 +75,19 @@ export class CreateTournamentComponent implements OnInit {
                 this.tournamentFormGroup.controls.duration.setValue(differenceTime);
             })
         ).subscribe();
+
+        // this.tournaments = this.db.collection<any>('tournaments').valueChanges()
+        // console.log('this.tournaments',this.tournaments)
+
+        // let tournamentId = this.router.routerState.snapshot.url.split('/')[2];
+        // this.tournamentFormGroup.patchValue({id: tournamentId})
+        // if(tournamentId !== "new-tournament"){
+        //     const tournament = this.tournamentListService.tournaments.find(t => t.id === tournamentId);
+        //     this.tournamentFormGroup.patchValue({
+        //         ...tournament,
+        //     })
+        //     this.currentPlayers = [...tournament.players];
+        // }
     }
 
 
@@ -130,11 +132,14 @@ export class CreateTournamentComponent implements OnInit {
     public createTournament(){
         const tournament: Tournament = {
             ...this.tournamentFormGroup.value,
-            players: [...this.currentPlayers]
+            players: []
         }
-        const newId = this.tournamentListService.createTournament(tournament);
-        
-        this.router.navigate(['/tournament-list/' + newId]);
+        console.log('tournament');
+        this.tournamentStore.dispatch(TournamentPageActions.CreateTournament({
+            tournament: tournament
+        }))
+        // const newId = this.tournamentListService.createTournament(tournament);
+        // this.router.navigate(['/tournament-list/' + newId]);
     }
 
     public updateTournament(){
@@ -142,7 +147,7 @@ export class CreateTournamentComponent implements OnInit {
             ...this.tournamentFormGroup.value,
             players: [...this.currentPlayers]
         }
-        this.tournamentListService.updateTournament(tournament);
+        // this.tournamentListService.updateTournament(tournament);
         this.router.navigate(['/tournament-list/' + tournament.id]);
     }
 

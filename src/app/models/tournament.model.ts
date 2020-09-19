@@ -1,4 +1,4 @@
-import { Player } from './player.model';
+import { Player } from "./player.model";
 
 export interface Tournament {
     id?: string;

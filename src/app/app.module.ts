@@ -12,6 +12,7 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { PlayerTileComponent } from './components/player-tile/player-tile.component';
+import { PlayerListComponent } from './pages/player-list/player-list.component';
 import { LoginPageComponent } from './pages/login/login-page.component';
 import { SettingsPageComponent } from './pages/settings/settings.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -20,12 +21,26 @@ import { TournamentComponent } from './pages/tournament/tournament.component';
 import { TournamentListComponent } from './pages/tournament-list/tournament-list.component';
 import { FilterObjectsModule } from './pipes/filter-objects/filter-objects.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TournamentListService } from './services/tournament-list.service';
-import { AuthService } from './services/auth.service';
 import { AuthGuard } from './services/auth-guard/auth-guard.service';
 import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
 import { SnackbarErrorComponent} from './shared/error-snackbar/error-snackbar.component';
 import { CreateTournamentComponent } from './pages/create-tournament/create-tournament.component';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreRouterConnectingModule, routerReducer } from '@ngrx/router-store';
+import { userReducer } from './state/user/user.reducer';
+import { tournamentReducer } from './state/tournament/tournament.reducer';
+import { playerReducer } from './state/player/player.reducer';
+import { UserEffects } from './state/user/user.effects';
+import { TournamentEffects } from './state/tournament/tournament.effects';
+import { PlayerEffects } from './state/player/player.effects';
+
+
+
+export const routerStateConfig = {
+  stateKey: 'router', // state-slice name for routing state
+};
 
 @NgModule({
   declarations: [
@@ -33,6 +48,7 @@ import { CreateTournamentComponent } from './pages/create-tournament/create-tour
     HeaderComponent,
     FooterComponent,
     LoginPageComponent,
+    PlayerListComponent,
     SettingsPageComponent,  
     TournamentListComponent,
     TournamentComponent,
@@ -51,12 +67,28 @@ import { CreateTournamentComponent } from './pages/create-tournament/create-tour
     NgxAuthFirebaseUIModule.forRoot(environment.firebase,() => 'calcutta_factory',environment.firebase_auth),
     AngularFireAuthModule,
     AngularFirestoreModule,    
-    FilterObjectsModule,
+    FilterObjectsModule, 
+
+    // ngrx modules
+    StoreModule.forRoot({
+      user: userReducer,
+      tournament: tournamentReducer,
+      player: playerReducer,
+      router: routerReducer,
+    }, {}),
+    EffectsModule.forRoot([
+      UserEffects,
+      TournamentEffects,
+      PlayerEffects,
+    ]),
+    StoreDevtoolsModule.instrument({
+      name: 'Calcutta',
+      maxAge: 25,
+    }),
+    StoreRouterConnectingModule.forRoot(),
   ],
   providers: [
-    AuthService,
     AuthGuard,
-    TournamentListService
   ],
   bootstrap: [AppComponent]
 })

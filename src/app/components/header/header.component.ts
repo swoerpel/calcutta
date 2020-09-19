@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { AuthService } from 'src/app/services/auth.service';
-import { tap } from 'rxjs/operators';
-
+import { UserState } from 'src/app/state/user/user.reducer';
+import { Store, select } from '@ngrx/store';
+import { UserPageActions } from 'src/app/state/user/actions';
+import { getAdminStatus } from 'src/app/state/user/user.selectors';
+import { Observable } from 'rxjs';
+import { tap, filter, map } from 'rxjs/operators';
+import { selectUrl, RouterState } from 'src/app/state/router';
 @Component({
     selector: 'app-header',
     templateUrl: './header.component.html',
@@ -10,25 +14,24 @@ import { tap } from 'rxjs/operators';
 })
 export class HeaderComponent implements OnInit {
 
-    public userIsAdmin: boolean = true;
-    
+    public isAdmin: Observable<boolean>;
+    public beforeLogin: Observable<boolean>;
     constructor(
-        private route: ActivatedRoute,
         private router: Router,
-        private auth: AuthService,
+        private userStore: Store<UserState>,
+        private store: Store<RouterState>
     ) {}
 
     ngOnInit(){
-        this.auth.user$.pipe(
-            tap((user) => {
-                // console.log('user logged in',user)
-            })
-        ).subscribe();
+       this.isAdmin = this.userStore.select(getAdminStatus)
+        this.beforeLogin = this.store.select(selectUrl).pipe(
+            filter(url => !!url),
+            map(url => url === '/login')
+        )
     }
 
     public logout(){
-        this.auth.logout();
-        this.router.navigate(['/login']);
+        this.userStore.dispatch(UserPageActions.LogoutUser())
     }
 
     public navigateHome(){
@@ -40,10 +43,16 @@ export class HeaderComponent implements OnInit {
     }
 
     public createTournament(){
+        // neeed work here
         let tournament_id = this.router.routerState.snapshot.url.split('/')[2];
         if(!tournament_id)
             tournament_id = 'new-tournament'
         this.router.navigate(['/create-tournament/' + tournament_id]);
+    }
+
+    public openPlayerList(){
+
+        this.router.navigate(['/player-list']);
     }
 
 }

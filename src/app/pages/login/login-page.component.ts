@@ -1,24 +1,36 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthProvider } from 'ngx-auth-firebaseui';
-import { AuthService } from 'src/app/services/auth.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { tap, catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
 import { SnackbarErrorComponent } from 'src/app/shared/error-snackbar/error-snackbar.component';
+import { Store } from '@ngrx/store';
+import { UserState } from 'src/app/state/user/user.reducer';
+import { UserPageActions } from 'src/app/state/user/actions';
+import { getLoginError } from 'src/app/state/user/user.selectors';
+import { tap, filter, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { TournamentState } from 'src/app/state/tournament/tournament.reducer';
+import { GetTournaments } from 'src/app/state/tournament/actions/tournament-api.actions';
+import { TournamentAPIActions } from 'src/app/state/tournament/actions';
 
 @Component({
     selector: 'login-page',
     templateUrl: './login-page.component.html',
     styleUrls: ['./login-page.component.scss']
 })
-export class LoginPageComponent implements OnInit {
+export class LoginPageComponent implements OnInit, OnDestroy {
 
     public displayLogin = true;
     public providers = AuthProvider;
 
     public authFormGroup: FormGroup = new FormGroup({
+        firstName: new FormControl('Steven',[
+            Validators.required,
+        ]),
+        lastName: new FormControl('Woerpel',[
+            Validators.required,
+        ]),
         email: new FormControl('steve.woerpel@gmail.com',[
             Validators.required,
         ]),
@@ -39,16 +51,25 @@ export class LoginPageComponent implements OnInit {
         success: 'Success',
     }
 
+    private unsubscribe: Subject<void> = new Subject();
+
     constructor(
-        private router: Router,
-        private auth: AuthService,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        private userStore: Store<UserState>,
+        private tournamentStore: Store<TournamentState>
     ) {}
     ngOnInit(){
+        this.userStore.select(getLoginError).pipe(
+            takeUntil(this.unsubscribe),
+            filter(err => !!err),
+            tap(err => this.displaySnackbar(err.code))
+        ).subscribe();
+        this.tournamentStore.dispatch(TournamentAPIActions.GetTournaments())
     }
 
-    public onLogin($event){
-        this.router.navigate(['/tournament-list']);
+    ngOnDestroy() {
+        this.unsubscribe.next();
+        this.unsubscribe.complete();
     }
 
     public toggleDisplay(){
@@ -57,57 +78,42 @@ export class LoginPageComponent implements OnInit {
     }
 
     public onSubmit(){
+
         if(this.displayLogin){
-            this.auth.login(
-                this.authFormGroup.controls.email.value,
-                this.authFormGroup.controls.password.value
-            ).pipe(
-                tap(res => {
-                    this.displaySnackbar(res);
-                    this.router.navigate(['/tournament-list']);
-                }),
-                catchError(err => {
-                    this.displaySnackbar(err);
-                    return throwError(err);
-                })
-            ).subscribe();
+            this.userStore.dispatch(UserPageActions.LoginUser({
+                email: this.authFormGroup.controls.email?.value,
+                password: this.authFormGroup.controls.password?.value
+            }))
         }else{
-            this.auth.register(
-                this.authFormGroup.controls.email.value,
-                this.authFormGroup.controls.password.value
-            ).pipe(
-                tap(res => {
-                    this.displaySnackbar(res);
-                    this.router.navigate(['/tournament-list']);
-                }),
-                catchError(err => {
-                    this.displaySnackbar(err);
-                    return throwError(err);
-                })
-            ).subscribe();
+            this.userStore.dispatch(UserPageActions.RegisterUser({
+                firstName: this.authFormGroup.controls.firstName?.value,
+                lastName: this.authFormGroup.controls.lastName?.value,
+                email: this.authFormGroup.controls.email?.value,
+                password: this.authFormGroup.controls.password?.value,
+            }))
         }
     }
 
 
-    private displaySnackbar(event) {
+    private displaySnackbar(error_code) {
         let message = this.displayStrings.unknown;
-        if(event.code === 'auth/invalid-email'){
+        if(error_code === 'auth/invalid-email'){
             message = this.displayStrings.invalidEmail;
-        }else if(event.code === 'auth/argument-error') {
+        }else if(error_code === 'auth/argument-error') {
             message = this.displayStrings.incorrectCredential;
-        }else if(event.code === 'auth/wrong-password') {
+        }else if(error_code === 'auth/wrong-password') {
             message = this.displayStrings.incorrectCredential;
-        }else  if(event.code === 'auth/weak-password') {
+        }else  if(error_code === 'auth/weak-password') {
             message = this.displayStrings.weakPassword;
-        }else  if(event.code === 'auth/email-already-in-use') {
+        }else  if(error_code === 'auth/email-already-in-use') {
             message = this.displayStrings.emailInUse;
-        }else if(event?.user){
+        }else{
             message = this.displayStrings.success;
         }
         const snackBarRef = this.snackBar.openFromComponent(SnackbarErrorComponent,{
             data:{
                 message: message,
-                isSuccess: !event.code,
+                isSuccess: !error_code,
             }
         });
         setTimeout(() => snackBarRef.dismiss(), 2000);

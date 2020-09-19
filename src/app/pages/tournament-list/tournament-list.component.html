@@ -10,8 +10,8 @@
     </mat-card-content>
     <mat-card-content>
         <mat-selection-list [multiple]="false">
-            <mat-list-option *ngFor="let tournament of tournamentListService.tournaments | filterByKey:filterTournament :'name'" 
-                             (click)="onSelectTournament(tournament.id)"
+            <mat-list-option *ngFor="let tournament of (tournaments | async)"
+                             (click)="onSelectTournament(tournament)"
                              [value]="tournament" 
                              class="tournament-list-item">
               {{tournament.name}}
