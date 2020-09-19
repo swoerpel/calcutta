@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { map, switchMap, tap, catchError, filter, withLatestFrom, take } from 'rxjs/operators';
+import { map, switchMap, tap, catchError, filter, withLatestFrom, take, flatMap } from 'rxjs/operators';
 import { of, Observable, from, EMPTY } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
@@ -8,6 +8,7 @@ import { ROUTER_NAVIGATED } from '@ngrx/router-store';
 import { Store } from '@ngrx/store';
 import { PlayerState } from "./player.reducer";
 import { PlayerAPIActions, PlayerPageActions } from './actions';
+import { GetPlayers } from './player.selectors';
 
 @Injectable({
     providedIn: 'root'
@@ -50,11 +51,13 @@ export class PlayerEffects {
         )   
     });
 
+
     createPlayer$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(PlayerPageActions.CreatePlayer),
-            // check duplicates here with filter (?)
-            switchMap((payload) => {
+            // withLatestFrom(GetPlayers),
+            // check duplicates here with iif, filter (?)
+            switchMap((payload:any) => {
                 return from(this.db.collection<any>('players').add(payload.player)).pipe(
                     map((res) => {
                         return PlayerAPIActions.CreatePlayerSuccess({player: {
@@ -63,6 +66,20 @@ export class PlayerEffects {
                         }})
                     }),
                     catchError(err => of(PlayerAPIActions.CreatePlayerError({err: err})))
+                )
+            }),
+        )
+    })
+
+    deletePlayer$ = createEffect(() => {
+        return this.actions$.pipe(
+            ofType(PlayerPageActions.DeletePlayer),
+            switchMap((payload:any) => {
+                return from(this.db.collection<any>('players').doc(payload.player.id).delete()).pipe(
+                    map((res) => {
+                        return PlayerAPIActions.DeletePlayerSuccess({playerId: payload.player.id})
+                    }),
+                    catchError(err => of(PlayerAPIActions.DeletePlayerError({err: err})))
                 )
             }),
         )

@@ -8,12 +8,14 @@ export interface PlayerState {
     playerList: Player[];
     getPlayersError: any;
     createPlayerError: any;
+    deletePlayerError: any;
 }
 
 const initialState: PlayerState = {
     playerList: null,
     getPlayersError: null,
     createPlayerError: null,
+    deletePlayerError: null,
 }
 
 export const playerReducer = createReducer<PlayerState>(
@@ -44,6 +46,7 @@ export const playerReducer = createReducer<PlayerState>(
     on(PlayerPageActions.CreatePlayer, (state,action): PlayerState => {
         return {
             ...state,
+            createPlayerError: null,
         }
     }),
     on(PlayerAPIActions.CreatePlayerSuccess, (state,action): PlayerState => {
@@ -56,6 +59,26 @@ export const playerReducer = createReducer<PlayerState>(
         return {
             ...state,
             createPlayerError: action.err
+        }
+    }),
+
+    on(PlayerPageActions.DeletePlayer, (state): PlayerState => {
+        return {
+            ...state,
+            deletePlayerError: null,
+        }
+    }),
+    on(PlayerAPIActions.DeletePlayerSuccess, (state, action): PlayerState => {
+        return {
+            ...state,
+            playerList: state.playerList.filter(p => p.id != action.playerId),
+            deletePlayerError: null,
+        }
+    }),
+    on(PlayerAPIActions.DeletePlayerError, (state,action): PlayerState => {
+        return {
+            ...state,
+            deletePlayerError: action.err
         }
     }),
 

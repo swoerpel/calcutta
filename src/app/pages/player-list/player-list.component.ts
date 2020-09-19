@@ -63,6 +63,7 @@ export class PlayerListComponent implements OnInit {
 
     public onSelectPlayer(player: Player){
         console.log('player',player)
+        this.selectedPlayer = player;
         this.playerFormGroup.patchValue({...player});
     }
 
@@ -93,7 +94,9 @@ export class PlayerListComponent implements OnInit {
         // this.playerFormGroup.reset();
     }
 
-    public deletePlayer(){
+    public deletePlayer() {
+        console.log('delete player',this.selectedPlayer);
+        this.playerStore.dispatch(PlayerPageActions.DeletePlayer({player: this.selectedPlayer}))
         // this.currentPlayers = this.currentPlayers.filter(player => 
         //     player.firstName !== this.playerFormGroup.value.firstName &&
         //     player.lastName !== this.playerFormGroup.value.lastName
