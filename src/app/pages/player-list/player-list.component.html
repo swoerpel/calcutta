@@ -31,7 +31,7 @@
 </div>
 <div class="section section__button-group" >
     <button (click)="createPlayer()" mat-raised-button [disabled]="this.playerFormGroup.invalid">Add</button>
-    <button (click)="updatePlayer()" mat-raised-button [disabled]="this.playerFormGroup.invalid">update</button>
+    <button (click)="updatePlayer()" mat-raised-button [disabled]="this.playerFormGroup.invalid || this.playerFormGroup.pristine">update</button>
     <button (click)="deletePlayer()" mat-raised-button [disabled]="this.playerFormGroup.invalid">delete</button>
 </div>
 
@@ -43,7 +43,7 @@
                          (click)="onSelectPlayer(player)"
                          [value]="player" 
                          class="player-list-item">
-          {{player.firstName}}
+          {{player.firstName}} {{player.lastName}}     {{player.fargoRating}}
         </mat-list-option>
     </mat-selection-list>
 </div>

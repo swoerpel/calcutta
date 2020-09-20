@@ -10,9 +10,11 @@ export const GetPlayers = createSelector(
     }
 )
 
-// export const GetTournament = createSelector(
-//     getPlayerFeatureState,
-//     (state: TournamentState) => {
-//         return state.tournamentList?.find(t => t.id === state.tournamentId);
-//     }
-// )
+export const GetCreatePlayerError = createSelector(
+    getPlayerFeatureState,
+    (state: PlayerState) => {
+        console.log('state',state.createPlayerError)
+        return state.createPlayerError;
+    }
+)
+

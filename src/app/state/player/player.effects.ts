@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { map, switchMap, tap, catchError, filter, withLatestFrom, take, flatMap } from 'rxjs/operators';
+import { map, switchMap, tap, catchError, filter, withLatestFrom, take } from 'rxjs/operators';
 import { of, Observable, from, EMPTY } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
@@ -9,6 +9,7 @@ import { Store } from '@ngrx/store';
 import { PlayerState } from "./player.reducer";
 import { PlayerAPIActions, PlayerPageActions } from './actions';
 import { GetPlayers } from './player.selectors';
+import { playerExists } from '../../shared/helpers';
 
 @Injectable({
     providedIn: 'root'
@@ -20,7 +21,6 @@ export class PlayerEffects {
         private actions$: Actions,
         private db: AngularFirestore,
         private playerStore: Store<PlayerState>,
-        private router: Router,
     ){ 
  
     }
@@ -52,29 +52,49 @@ export class PlayerEffects {
     });
 
 
-    createPlayer$ = createEffect(() => {
+    createAndUpdatePlayer$ = createEffect(() => {
         return this.actions$.pipe(
-            ofType(PlayerPageActions.CreatePlayer),
-            // withLatestFrom(GetPlayers),
-            // check duplicates here with iif, filter (?)
-            switchMap((payload:any) => {
-                return from(this.db.collection<any>('players').add(payload.player)).pipe(
-                    map((res) => {
-                        return PlayerAPIActions.CreatePlayerSuccess({player: {
-                            ...payload.player,
-                            id:res.id
-                        }})
-                    }),
-                    catchError(err => of(PlayerAPIActions.CreatePlayerError({err: err})))
-                )
+            ofType(PlayerPageActions.CreatePlayer, PlayerPageActions.UpdatePlayer),
+            withLatestFrom(this.playerStore.select(GetPlayers)),
+            switchMap(([cuPayload,players]) => {
+                if(cuPayload.type === PlayerPageActions.UpdatePlayer.type){
+                    if (playerExists(players.filter(p => p.id !== cuPayload.player.id), cuPayload.player)){
+                        // Should be dispatching UpdatePlayerError -> 
+                        // Should actually be dispatching general page error
+                        return of(PlayerAPIActions.CreatePlayerError({err: 'duplicate player'}));
+                    }
+                    return from(this.db.collection<any>('players').doc(cuPayload.player.id).update(cuPayload.player)).pipe(
+                        map(() => {
+                            return PlayerAPIActions.UpdatePlayerSuccess({player: {
+                                ...cuPayload.player,
+                            }})
+                        }),
+                        catchError(err => of(PlayerAPIActions.UpdatePlayerError({err: err})))
+                    )
+                } else {
+                    if (playerExists(players, cuPayload.player)){
+                        return of(PlayerAPIActions.CreatePlayerError({err: 'duplicate player'}));
+                    }
+                    return from(this.db.collection<any>('players').add(cuPayload.player)).pipe(
+                        map((res) => {
+                            return PlayerAPIActions.CreatePlayerSuccess({player: {
+                                ...cuPayload.player,
+                                id:res.id
+                            }})
+                        }),
+                        catchError(err => of(PlayerAPIActions.CreatePlayerError({err: err})))
+                    )
+                }
             }),
         )
     })
+    
+
 
     deletePlayer$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(PlayerPageActions.DeletePlayer),
-            switchMap((payload:any) => {
+            switchMap((payload) => {
                 return from(this.db.collection<any>('players').doc(payload.player.id).delete()).pipe(
                     map((res) => {
                         return PlayerAPIActions.DeletePlayerSuccess({playerId: payload.player.id})

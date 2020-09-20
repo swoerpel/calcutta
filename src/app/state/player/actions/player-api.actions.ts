@@ -25,6 +25,16 @@ export const CreatePlayerError = createAction(
     props<{err: any}>()
 )
 
+export const UpdatePlayerSuccess = createAction(
+    '[Players API] Update Player Success',
+    props<{player: Player}>()
+)
+
+export const UpdatePlayerError = createAction(
+    '[Players API] Update Player Error',
+    props<{err: any}>()
+)
+
 export const DeletePlayerSuccess = createAction(
     '[Players API] Delete Player Success',
     props<{playerId: string}>()

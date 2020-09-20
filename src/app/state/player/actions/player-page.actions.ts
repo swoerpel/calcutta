@@ -7,8 +7,12 @@ export const CreatePlayer = createAction(
     props<{player: Player}>()
 );
 
-
 export const DeletePlayer = createAction(
     '[Player Page] Delete Player',
+    props<{player: Player}>()
+);
+
+export const UpdatePlayer = createAction(
+    '[Player Page] Update Player',
     props<{player: Player}>()
 );

@@ -8,6 +8,7 @@ export interface PlayerState {
     playerList: Player[];
     getPlayersError: any;
     createPlayerError: any;
+    updatePlayerError: any;
     deletePlayerError: any;
 }
 
@@ -15,14 +16,13 @@ const initialState: PlayerState = {
     playerList: null,
     getPlayersError: null,
     createPlayerError: null,
+    updatePlayerError: null,
     deletePlayerError: null,
 }
 
 export const playerReducer = createReducer<PlayerState>(
     initialState,
-
-    // default reducer 
-    // API Actions
+// ===============================================================================
     on(PlayerAPIActions.GetPlayers, (state): PlayerState => {
         return {
             ...state,
@@ -42,7 +42,7 @@ export const playerReducer = createReducer<PlayerState>(
             getPlayersError: action.err,
         }
     }),
-
+// ===============================================================================
     on(PlayerPageActions.CreatePlayer, (state,action): PlayerState => {
         return {
             ...state,
@@ -61,7 +61,32 @@ export const playerReducer = createReducer<PlayerState>(
             createPlayerError: action.err
         }
     }),
-
+// ===============================================================================
+    on(PlayerPageActions.UpdatePlayer, (state): PlayerState => {
+        return {
+            ...state,
+            updatePlayerError: null,
+        }
+    }),
+    on(PlayerAPIActions.UpdatePlayerSuccess, (state,action): PlayerState => {
+        return {
+            ...state,
+            playerList: state.playerList.map((p) => {
+                if (p.id === action.player.id){
+                    console.log("in state update player", action.player)
+                    return action.player
+                }
+                return p;
+            })
+        }
+    }),
+    on(PlayerAPIActions.UpdatePlayerError, (state,action): PlayerState => {
+        return {
+            ...state,
+            updatePlayerError: action.err,
+        }
+    }),
+// ===============================================================================
     on(PlayerPageActions.DeletePlayer, (state): PlayerState => {
         return {
             ...state,
