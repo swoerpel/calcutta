@@ -28,7 +28,10 @@ export class PlayerEffects {
     getPlayers$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(ROUTER_NAVIGATED),
-            filter((action: any) => action?.payload.event.url === '/player-list'),
+            filter((action: any) => 
+                (action?.payload.event.url === '/manage-player-list') || 
+                (action?.payload.event.url === '/tournament-list')  
+            ),
             switchMap(() => {
                     return this.db.collection<any>('players').get().pipe(
                     map((res) => {

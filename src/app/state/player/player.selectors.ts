@@ -13,7 +13,6 @@ export const GetPlayers = createSelector(
 export const GetCreatePlayerError = createSelector(
     getPlayerFeatureState,
     (state: PlayerState) => {
-        console.log('state',state.createPlayerError)
         return state.createPlayerError;
     }
 )

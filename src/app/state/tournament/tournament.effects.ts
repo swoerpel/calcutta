@@ -53,17 +53,24 @@ export class TournamentEffects {
         )   
     });
 
-    // openTournament$ = createEffect(() => {
-    //     return this.actions$.pipe(
-    //         ofType(TournamentPageActions.OpenTournament),
-    //         tap((action) => )
-    //         switchMap((action) => {
-    //             return of()
+    createTournament$ = createEffect(() => {
+        return this.actions$.pipe(
+            ofType(TournamentPageActions.CreateTournament),
+            switchMap((payload) => {
+                console.log('payload',payload)
+                return from(this.db.collection<any>('tournaments').add(payload.tournament)).pipe(
+                    map((res) => {
+                        return TournamentAPIActions.CreateTournamentSuccess({tournament: {
+                            ...payload.tournament,
+                            id:res.id
+                        }})
+                    }),
+                    catchError(err => of(TournamentAPIActions.CreateTournamentError({err: err})))
+                )
+            }),
 
-    //         }),
-
-    //     )
-    // })
+        )
+    })
 
     // // not needed
     // createTournaments$ = createEffect(() => {

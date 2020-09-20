@@ -20,7 +20,7 @@ export const GetTournamentsError = createAction(
 
 export const CreateTournamentSuccess = createAction(
     '[Tournament API] Create Tournament Success',
-    // props<{tournament: Tournament}>()
+    props<{tournament: Tournament}>()
 )
 
 export const CreateTournamentError = createAction(

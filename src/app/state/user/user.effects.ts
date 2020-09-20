@@ -1,12 +1,15 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { map, switchMap, tap, catchError } from 'rxjs/operators';
+import { map, switchMap, tap, catchError, flatMap, withLatestFrom } from 'rxjs/operators';
 import { UserAPIActions, UserPageActions } from './actions';
 import { of, Observable, from } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { TournamentAPIActions } from '../tournament/actions';
+import { ROUTER_NAVIGATED } from '@ngrx/router-store';
+import { UserState } from './user.reducer';
+import { Store } from '@ngrx/store';
 
 @Injectable({
     providedIn: 'root'
@@ -18,7 +21,8 @@ export class  UserEffects {
         private actions$: Actions,
         private firebaseAuth: AngularFireAuth,
         private router: Router,
-        private db: AngularFirestore
+        private db: AngularFirestore,
+        private userStore: Store<UserState>,
     ){ }
 
     loginUser$ = createEffect(() => {
@@ -80,9 +84,11 @@ export class  UserEffects {
         return this.actions$.pipe(
             ofType(
                 UserAPIActions.LoginUserSuccess, 
-                UserAPIActions.RegisterUserSuccess
+                UserAPIActions.RegisterUserSuccess,
+                // ROUTER_NAVIGATED,
             ),
             switchMap((action) => {
+                console.log("action",action)
                 return this.db.collection<any>('private').doc('roles').get().pipe(
                     map((res) => {
                         return UserAPIActions.AssignUserPrivileges({

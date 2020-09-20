@@ -6,5 +6,5 @@ export interface Tournament {
     roomName: string;
     endTime: string;
     duration?: string;
-    players: Player[];
+    players: string[];
 }

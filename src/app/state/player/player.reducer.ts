@@ -1,8 +1,6 @@
 import { createReducer, on } from "@ngrx/store"
-import { Action } from "rxjs/internal/scheduler/Action";
 import { Player } from 'src/app/models/player.model';
 import { PlayerAPIActions, PlayerPageActions } from './actions';
-import { PlayerListComponent } from 'src/app/pages/player-list/player-list.component';
 
 export interface PlayerState {
     playerList: Player[];
@@ -73,7 +71,6 @@ export const playerReducer = createReducer<PlayerState>(
             ...state,
             playerList: state.playerList.map((p) => {
                 if (p.id === action.player.id){
-                    console.log("in state update player", action.player)
                     return action.player
                 }
                 return p;

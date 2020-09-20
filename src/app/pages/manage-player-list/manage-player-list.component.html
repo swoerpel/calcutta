@@ -35,16 +35,4 @@
     <button (click)="deletePlayer()" mat-raised-button [disabled]="this.playerFormGroup.invalid">delete</button>
 </div>
 
-<div class="section section__player-list">
-    <div class="title">Player List</div>
-    <div class="subtitle" *ngIf="(players | async)?.length !== 0">{{selectedPlayer.firstName}} {{selectedPlayer.lastName}}</div>
-    <mat-selection-list [multiple]="false">
-        <mat-list-option *ngFor="let player of (players | async)"
-                         (click)="onSelectPlayer(player)"
-                         [value]="player" 
-                         class="player-list-item">
-          {{player.firstName}} {{player.lastName}}     {{player.fargoRating}}
-        </mat-list-option>
-    </mat-selection-list>
-</div>
-
+<player-list [playerList]="playerList" (playerSelected)="onSelectPlayer($event)"></player-list>

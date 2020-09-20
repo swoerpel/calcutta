@@ -14,11 +14,11 @@ import { SnackbarErrorComponent } from 'src/app/shared/error-snackbar/error-snac
 
 
 @Component({
-    selector: 'player-list',
-    templateUrl: './player-list.component.html',
-    styleUrls: ['./player-list.component.scss']
+    selector: 'manage-player-list',
+    templateUrl: './manage-player-list.component.html',
+    styleUrls: ['./manage-player-list.component.scss']
 })
-export class PlayerListComponent implements OnInit {
+export class ManagePlayerListComponent implements OnInit {
     
     public fargoRating = {
         min:300,
@@ -32,7 +32,7 @@ export class PlayerListComponent implements OnInit {
         currentBetPrice: 0,
     }
 
-    public players: Observable<Player[]>;
+    public players$: Observable<Player[]>;
 
     public selectedPlayer: Player = {
         firstName: 'selected',
@@ -53,16 +53,19 @@ export class PlayerListComponent implements OnInit {
     public tournaments: Observable<Tournament[]>;
     public snackbarError: Observable<any>;
     
+    public playerList: Player[] = [];
+
     constructor(
         private playerStore: Store<PlayerState>,
         private snackBar: MatSnackBar,
     ) {}
     
     ngOnInit(){
-        this.players = this.playerStore.select(GetPlayers).pipe(
+        this.playerStore.select(GetPlayers).pipe(
             filter(p => !!p),
-            tap(p => console.log('p',p))
-        );
+            filter(p => p.length !== 0),
+            tap(p => this.playerList = p)
+        ).subscribe();
 
         this.snackbarError = this.playerStore.select(GetCreatePlayerError).pipe(
             filter(e => !!e),
@@ -70,11 +73,9 @@ export class PlayerListComponent implements OnInit {
         )
 
         this.snackbarError.subscribe();
-        this.playerFormGroup.statusChanges.pipe(tap(s => console.log('s',s))).subscribe();
     }
 
     public onSelectPlayer(player: Player){
-        console.log('player',player)
         this.selectedPlayer = player;
         this.playerFormGroup.patchValue({...player});
     }
@@ -86,55 +87,22 @@ export class PlayerListComponent implements OnInit {
                 currentBetPrice: 0,
             }
         }))
-
         // COMMENTED OUT FOR TESTING EASE
-        // this.playerFormGroup.reset();
-    }
-
-
-    public updatePlayer(){
-        console.log("Player to Overwrite ->",this.selectedPlayer); 
-        
-        let updatedPlayer = {
-            ...this.selectedPlayer,
-            ...this.playerFormGroup.value
-        }
-        console.log('Overwritten Player ->',updatedPlayer)
-        this.playerStore.dispatch(PlayerPageActions.UpdatePlayer({player: updatedPlayer}));
-        //     player: {
-        //         ...this.selectedPlayer,
-
-                
-        //     }
-        // }))
-        // this.playerStore.dispatch(PlayerPageActions.CreatePlayer({
-        //     player: {
-        //         ...this.playerFormGroup.value,
-        //         currentBetPrice: 0,
-        //     }
-        // }))
-        // this.currentPlayers = this.currentPlayers.map((player) => {
-        //     if(
-        //         player.firstName === this.selectedPlayer.firstName &&
-        //         player.lastName === this.selectedPlayer.lastName
-        //     ){
-        //         return {
-        //             ...this.playerFormGroup.value,
-        //             currentBetPrice: 0,
-        //         }
-        //     }
-        //     return player;
-        // })
-        // this.playerFormGroup.reset();
-    }
-
-    public deletePlayer() {
-        console.log('delete player',this.selectedPlayer);
-        this.playerStore.dispatch(PlayerPageActions.DeletePlayer({player: this.selectedPlayer}))
         this.playerFormGroup.reset();
     }
 
+    public updatePlayer(){
+        this.playerStore.dispatch(PlayerPageActions.UpdatePlayer({player: {
+            ...this.selectedPlayer,
+            ...this.playerFormGroup.value
+        }}));
+        this.playerFormGroup.reset();
+    }
 
+    public deletePlayer() {
+        this.playerStore.dispatch(PlayerPageActions.DeletePlayer({player: this.selectedPlayer}))
+        this.playerFormGroup.reset();
+    }
 
     private displaySnackbar(error_code, isSuccess = false) {
         let message ='Error Occured';
@@ -148,7 +116,6 @@ export class PlayerListComponent implements OnInit {
             }
         });
         setTimeout(() => snackBarRef.dismiss(), 2000);
-        
     }
 
 }

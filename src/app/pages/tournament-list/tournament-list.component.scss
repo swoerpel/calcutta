@@ -1,15 +1,19 @@
-.tournament-search {
-    width: 100%;
+
+:host {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.title{
+.section {
     display: flex;
-    justify-content: center;
-    margin: 2rem 0rem;
+    width: 80%;
+    margin-bottom: 1rem;
+    flex-direction: column;
 }
 
-.tournament-list{
-    margin-top: -2rem;
+mat-form-field{
+    margin-bottom: -1rem;
 }
 
 .tournament-list-item{
@@ -19,6 +23,10 @@
     border: 1px solid rgba(0,0,0,0.2);
 }
 
-.tournament-search-wrapper{
-    margin: 0;
+.title{ 
+    font-size: 2.5rem;
+    margin-top: 2rem;
+    margin-bottom:2rem;
+    text-align: center;
 }
+

@@ -1,0 +1,9 @@
+<!-- SEARCH WILL BE HERE -->
+<mat-selection-list [multiple]="false">
+    <mat-list-option *ngFor="let player of playerList"
+                    (click)="onSelectPlayer(player)"
+                    [value]="player" 
+                    class="player-list-item">
+    {{player.firstName}} {{player.lastName}} {{player.fargoRating}}
+    </mat-list-option>
+</mat-selection-list>

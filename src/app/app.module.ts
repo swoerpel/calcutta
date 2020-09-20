@@ -12,7 +12,7 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { PlayerTileComponent } from './components/player-tile/player-tile.component';
-import { PlayerListComponent } from './pages/player-list/player-list.component';
+import { ManagePlayerListComponent } from './pages/manage-player-list/manage-player-list.component';
 import { LoginPageComponent } from './pages/login/login-page.component';
 import { SettingsPageComponent } from './pages/settings/settings.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -35,6 +35,7 @@ import { playerReducer } from './state/player/player.reducer';
 import { UserEffects } from './state/user/user.effects';
 import { TournamentEffects } from './state/tournament/tournament.effects';
 import { PlayerEffects } from './state/player/player.effects';
+import { PlayerListComponent } from './components/player-list/player-list.component';
 
 
 
@@ -48,6 +49,7 @@ export const routerStateConfig = {
     HeaderComponent,
     FooterComponent,
     LoginPageComponent,
+    ManagePlayerListComponent,
     PlayerListComponent,
     SettingsPageComponent,  
     TournamentListComponent,

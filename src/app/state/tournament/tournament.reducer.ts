@@ -1,25 +1,28 @@
 import { Tournament } from "../../models/tournament.model"
 import { createReducer, on } from "@ngrx/store"
 import { TournamentPageActions, TournamentAPIActions } from "./actions";
-import { Action } from "rxjs/internal/scheduler/Action";
 
 export interface TournamentState {
     tournamentList: Tournament[];
     tournamentId: string;
     getTournamentsError: any;
+    createTournamentError: any;
+    updateTournamentError: any;
+    deleteTournamentError: any;
 }
 
 const initialState: TournamentState = {
     tournamentList: null,
     tournamentId: null,
     getTournamentsError: null,
+    createTournamentError: null,
+    updateTournamentError: null,
+    deleteTournamentError: null,
 }
 
 export const tournamentReducer = createReducer<TournamentState>(
     initialState,
-
-    // default reducer 
-    // API Actions
+    // ===============================================================================
     on(TournamentAPIActions.GetTournaments, (state): TournamentState => {
         return {
             ...state,
@@ -39,9 +42,31 @@ export const tournamentReducer = createReducer<TournamentState>(
             getTournamentsError: action.err,
         }
     }),
+// ===============================================================================
+    on(TournamentPageActions.CreateTournament, (state): TournamentState => {
+        return {
+            ...state,
+            createTournamentError: null,
+        }
+    }),
+    on(TournamentAPIActions.CreateTournamentSuccess, (state,action): TournamentState => {
+        return {
+            ...state,
+            tournamentList: [...state.tournamentList, action.tournament],
+            createTournamentError: null,
+        }
+    }),
+    on(TournamentAPIActions.CreateTournamentError, (state,action): TournamentState => {
+        return {
+            ...state,
+            createTournamentError: action.err,
+        }
+    }),
+// ===============================================================================
 
+// ===============================================================================
 
-    // Page Actions
+// ===============================================================================
     on(TournamentPageActions.OpenTournament, (state,action): TournamentState => {
         return {
             ...state,
@@ -49,10 +74,6 @@ export const tournamentReducer = createReducer<TournamentState>(
         }
     }),
 
-    // on(TournamentPageActions.CreateTournament, (state,action): TournamentState => {
-    //     return {
-    //         ...state,
-    //     }
-    // }),
+
 
 );

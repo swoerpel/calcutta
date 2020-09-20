@@ -52,7 +52,7 @@ export class HeaderComponent implements OnInit {
 
     public openPlayerList(){
 
-        this.router.navigate(['/player-list']);
+        this.router.navigate(['/manage-player-list']);
     }
 
 }

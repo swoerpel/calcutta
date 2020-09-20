@@ -1,21 +1,16 @@
-<mat-card class="container">
-    <mat-card-title class="title">
-        Tournament List
-    </mat-card-title>
-    <mat-card-content class="tournament-search-wrapper">
-        <mat-form-field class="tournament-search" appearance="outline">
-            <mat-label>Search Tournaments</mat-label>
-            <input matInput [(ngModel)]="filterTournament" placeholder="tournament name"/>
-        </mat-form-field>
-    </mat-card-content>
-    <mat-card-content>
-        <mat-selection-list [multiple]="false">
-            <mat-list-option *ngFor="let tournament of (tournaments | async)"
-                             (click)="onSelectTournament(tournament)"
-                             [value]="tournament" 
-                             class="tournament-list-item">
-              {{tournament.name}}
-            </mat-list-option>
-          </mat-selection-list>
-    </mat-card-content>
-</mat-card>
+
+<div class="section" >
+    <div class="title">Open Tournaments</div>
+    <mat-form-field  appearance="outline">
+        <mat-label>Search Tournaments</mat-label>
+        <input matInput [(ngModel)]="filterTournament" placeholder="tournament name"/>
+    </mat-form-field>
+    <mat-selection-list [multiple]="false">
+        <mat-list-option *ngFor="let tournament of (tournaments | async)"
+                         (click)="onSelectTournament(tournament)"
+                         [value]="tournament" 
+                         class="tournament-list-item">
+          {{tournament.name}}
+        </mat-list-option>
+      </mat-selection-list>
+</div>
