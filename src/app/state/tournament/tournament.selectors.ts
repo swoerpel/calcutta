@@ -10,7 +10,7 @@ export const GetTournaments = createSelector(
     }
 )
 
-export const GetTournament = createSelector(
+export const GetCurrentTournament = createSelector(
     getTournamentFeatureState,
     (state: TournamentState) => {
         return state.tournamentList?.find(t => t.id === state.tournamentId);

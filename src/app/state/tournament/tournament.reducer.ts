@@ -9,6 +9,7 @@ export interface TournamentState {
     createTournamentError: any;
     updateTournamentError: any;
     deleteTournamentError: any;
+    openTournamentError: any;
 }
 
 const initialState: TournamentState = {
@@ -18,6 +19,7 @@ const initialState: TournamentState = {
     createTournamentError: null,
     updateTournamentError: null,
     deleteTournamentError: null,
+    openTournamentError: null,
 }
 
 export const tournamentReducer = createReducer<TournamentState>(
@@ -62,6 +64,15 @@ export const tournamentReducer = createReducer<TournamentState>(
             createTournamentError: action.err,
         }
     }),
+// ===============================================================================
+    on(TournamentPageActions.OpenTournament, (state, action): TournamentState => {
+        return {
+            ...state,
+            tournamentId: action.tournamentId,
+            openTournamentError: null,
+        }
+    }),
+
 // ===============================================================================
 
 // ===============================================================================

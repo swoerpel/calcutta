@@ -27,3 +27,8 @@ export const CreateTournamentError = createAction(
     '[Tournament API] Create Tournament Error',
     props<{err: any}>()
 )
+
+export const OpenTournamentError = createAction(
+    '[Tournament API] Open Tournament Error',
+    props<{err: any}>()
+)

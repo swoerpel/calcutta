@@ -33,6 +33,7 @@ export class TournamentListComponent implements OnInit {
     }
 
     public onSelectTournament(tournament){
+        console.log('tournament',tournament)
         this.tournamentStore.dispatch(TournamentPageActions.OpenTournament({tournamentId: tournament.id}))
         this.router.navigate(['/tournament-list', tournament.id]);
     }

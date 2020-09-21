@@ -53,6 +53,7 @@ export class TournamentEffects {
         )   
     });
 
+    // will need update still
     createTournament$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(TournamentPageActions.CreateTournament),
@@ -71,6 +72,27 @@ export class TournamentEffects {
 
         )
     })
+
+    // will need update still
+    // openTournament$ = createEffect(() => {
+    //     return this.actions$.pipe(
+    //         ofType(TournamentPageActions.OpenTournament),
+            // switchMap((payload) => {
+            //     console.log('open tournament payload',payload)
+            //     // return from(this.db.collection<any>('tournaments').add(payload.tournament)).pipe(
+            //     //     map((res) => {
+            //     //         return TournamentAPIActions.CreateTournamentSuccess({tournament: {
+            //     //             ...payload.tournament,
+            //     //             id:res.id
+            //     //         }})
+            //     //     }),
+            //     //     catchError(err => of(TournamentAPIActions.CreateTournamentError({err: err})))
+            //     // )
+            //     return of(TournamentAPIActions.OpenTournamentError({err: ''}))
+    //         }),
+
+    //     )
+    // })
 
     // // not needed
     // createTournaments$ = createEffect(() => {
