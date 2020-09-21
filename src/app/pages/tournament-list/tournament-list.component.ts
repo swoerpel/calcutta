@@ -19,7 +19,7 @@ import { TournamentPageActions } from 'src/app/state/tournament/actions';
 export class TournamentListComponent implements OnInit {
 
     public tournaments: Observable<Tournament[]>;
-    filterTournament:string;
+    tournamentInput:string;
 
     constructor(
         private tournamentStore: Store<TournamentState>,

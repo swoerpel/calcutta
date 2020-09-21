@@ -22,6 +22,8 @@ export class PlayerListComponent implements OnChanges {
     @Input() playerList: Player[];
     @Output() playerSelected: EventEmitter<Player> = new EventEmitter();
 
+    public playerInput: string;
+
     public tournaments: Observable<Tournament[]>;
     public snackbarError: Observable<any>;
     

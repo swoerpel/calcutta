@@ -17,7 +17,7 @@ import { GetPlayerSet } from 'src/app/state/player/player.selectors';
 })
 export class TournamentComponent implements OnInit {
 
-    public filterPlayer:string;
+    public playerInput:string;
     public tournament: Observable<Tournament>;
     public players$: Observable<Player[]>;
 

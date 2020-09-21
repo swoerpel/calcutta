@@ -19,7 +19,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './modules/material-module';
 import { TournamentComponent } from './pages/tournament/tournament.component';
 import { TournamentListComponent } from './pages/tournament-list/tournament-list.component';
-import { FilterObjectsModule } from './pipes/filter-objects/filter-objects.module';
+import { FilterPlayersModule, FilterTournamentsModule } from './pipes/filter-objects/filter-objects.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthGuard } from './services/auth-guard/auth-guard.service';
 import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
@@ -69,7 +69,8 @@ export const routerStateConfig = {
     NgxAuthFirebaseUIModule.forRoot(environment.firebase,() => 'calcutta_factory',environment.firebase_auth),
     AngularFireAuthModule,
     AngularFirestoreModule,    
-    FilterObjectsModule, 
+    FilterPlayersModule, 
+    FilterTournamentsModule, 
 
     // ngrx modules
     StoreModule.forRoot({

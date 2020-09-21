@@ -3,10 +3,10 @@
     <div class="title">Open Tournaments</div>
     <mat-form-field  appearance="outline">
         <mat-label>Search Tournaments</mat-label>
-        <input matInput [(ngModel)]="filterTournament" placeholder="tournament name"/>
+        <input matInput [(ngModel)]="tournamentInput" placeholder="tournament name"/>
     </mat-form-field>
     <mat-selection-list [multiple]="false">
-        <mat-list-option *ngFor="let tournament of (tournaments | async)"
+        <mat-list-option *ngFor="let tournament of (tournaments | async) | filterTournaments:tournamentInput"
                          (click)="onSelectTournament(tournament)"
                          [value]="tournament" 
                          class="tournament-list-item">

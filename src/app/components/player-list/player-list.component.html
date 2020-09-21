@@ -1,6 +1,10 @@
 <!-- SEARCH WILL BE HERE -->
+<mat-form-field  appearance="outline">
+    <mat-label>Search Players</mat-label>
+    <input matInput [(ngModel)]="playerInput" placeholder="player name"/>
+</mat-form-field>
 <mat-selection-list [multiple]="false">
-    <mat-list-option *ngFor="let player of playerList"
+    <mat-list-option *ngFor="let player of playerList | filterPlayers: playerInput"
                     (click)="onSelectPlayer(player)"
                     [value]="player" 
                     class="player-list-item">
