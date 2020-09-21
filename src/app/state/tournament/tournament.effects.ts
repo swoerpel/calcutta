@@ -10,7 +10,7 @@ import { TournamentPageActions,TournamentAPIActions } from './actions';
 import { UserAPIActions } from '../user/actions';
 import { routerNavigatedAction, ROUTER_NAVIGATED } from '@ngrx/router-store';
 import { TournamentState } from './tournament.reducer';
-import { Store } from '@ngrx/store';
+import { INIT, Store } from '@ngrx/store';
 
 @Injectable({
     providedIn: 'root'
@@ -29,8 +29,8 @@ export class TournamentEffects {
 
     getTournaments$ = createEffect(() => {
         return this.actions$.pipe(
-            ofType(ROUTER_NAVIGATED),
-            filter((action: any) => action?.payload.event.url === '/tournament-list'),
+            ofType(ROUTER_NAVIGATED,INIT),
+            // filter((action: any) => action?.payload.event.url === '/tournament-list'),
             switchMap((action) => {
                     return this.db.collection<any>('tournaments').get().pipe(
                     map((res) => {
@@ -53,52 +53,60 @@ export class TournamentEffects {
         )   
     });
 
-    // will need update still
-    createTournament$ = createEffect(() => {
+    resetCurrentTournament$ = createEffect(() => {
         return this.actions$.pipe(
-            ofType(TournamentPageActions.CreateTournament),
-            switchMap((payload) => {
-                console.log('payload',payload)
-                return from(this.db.collection<any>('tournaments').add(payload.tournament)).pipe(
-                    map((res) => {
-                        return TournamentAPIActions.CreateTournamentSuccess({tournament: {
-                            ...payload.tournament,
-                            id:res.id
-                        }})
-                    }),
-                    catchError(err => of(TournamentAPIActions.CreateTournamentError({err: err})))
-                )
+            ofType(ROUTER_NAVIGATED),
+            filter((action: any) => action?.payload.event.url === '/create-tournament/new-tournament'),
+            switchMap(() => {
+                return of(TournamentAPIActions.ResetCurrentTournament())
+            }),
+        )   
+    });
+
+    setCurrentTournament$ = createEffect(() => {
+        return this.actions$.pipe(
+            ofType(ROUTER_NAVIGATED,INIT),
+            map((action: any) => action?.payload.event.url.split('/')),
+            filter((url: any) => {
+                url.shift();
+                return(url[0] === 'create-tournament' && url[1] !== 'new-tournament')
+            }),
+            switchMap((url) => {
+                return of(TournamentAPIActions.SetCurrentTournament({tournamentId: url[1]}))
+            }),
+        )   
+    });
+
+    // will need update still
+    createAndUpdateTournament$ = createEffect(() => {
+        return this.actions$.pipe(
+            ofType(TournamentPageActions.CreateTournament, TournamentPageActions.UpdateTournament),
+            switchMap((cuPayload) => {
+                if(cuPayload.type === TournamentPageActions.UpdateTournament.type){
+                    return from(this.db.collection<any>('tournaments').doc(cuPayload.tournament.id).update(cuPayload.tournament)).pipe(
+                        map(() => {
+                            return TournamentAPIActions.UpdateTournamentSuccess({tournament: {
+                                ...cuPayload.tournament,
+                            }})
+                        }),
+                        catchError(err => of(TournamentAPIActions.UpdateTournamentError({err: err})))
+                    )
+                }else{
+                    return from(this.db.collection<any>('tournaments').add(cuPayload.tournament)).pipe(
+                        map((res) => {
+                            return TournamentAPIActions.CreateTournamentSuccess({tournament: {
+                                ...cuPayload.tournament,
+                                id:res.id
+                            }})
+                        }),
+                        catchError(err => of(TournamentAPIActions.CreateTournamentError({err: err})))
+                    )
+                }
+
             }),
 
         )
     })
 
-    // will need update still
-    // openTournament$ = createEffect(() => {
-    //     return this.actions$.pipe(
-    //         ofType(TournamentPageActions.OpenTournament),
-            // switchMap((payload) => {
-            //     console.log('open tournament payload',payload)
-            //     // return from(this.db.collection<any>('tournaments').add(payload.tournament)).pipe(
-            //     //     map((res) => {
-            //     //         return TournamentAPIActions.CreateTournamentSuccess({tournament: {
-            //     //             ...payload.tournament,
-            //     //             id:res.id
-            //     //         }})
-            //     //     }),
-            //     //     catchError(err => of(TournamentAPIActions.CreateTournamentError({err: err})))
-            //     // )
-            //     return of(TournamentAPIActions.OpenTournamentError({err: ''}))
-    //         }),
 
-    //     )
-    // })
-
-    // // not needed
-    // createTournaments$ = createEffect(() => {
-    //     return this.actions$.pipe(
-    //         ofType(TournamentPageActions.CreateTournament),
-    //         switchMap((action) => ),
-    //     )   
-    // });
 }

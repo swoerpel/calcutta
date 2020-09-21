@@ -1,6 +1,6 @@
 <div class="section section__tournament-input">
     <div class="title">Create Tournament</div>
-    <!-- <div class="title">{{tournamentFormGroup.controls.id.value === 'new-tournament' ? 'Create' : 'Update'}} Tournament</div> -->
+    <div class="title">{{tournament_id === 'new-tournament' ? 'Create' : 'Update'}} Tournament</div>
     <mat-form-field appearance="outline">
         <mat-label>Tournament Name</mat-label>
         <input [formControl]="tournamentFormGroup.controls.name" 
@@ -99,8 +99,7 @@
     <button (click)="createTournament()" 
             [disabled]="tournamentFormGroup.controls.name.invalid || tournamentFormGroup.controls.endTime.invalid"
             mat-raised-button>
-        Create Tournament
-        <!-- {{tournamentFormGroup.controls.id.value === 'new-tournament' ? 'Create Tournament' : 'Update Tournament'}} -->
+        {{tournament_id === 'new-tournament'  ? 'Create Tournament' : 'Update Tournament'}}
     </button>
 </footer>
 

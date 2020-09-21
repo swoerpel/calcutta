@@ -28,7 +28,26 @@ export const CreateTournamentError = createAction(
     props<{err: any}>()
 )
 
+export const UpdateTournamentSuccess = createAction(
+    '[Tournament API] Update Tournament Success',
+    props<{tournament: Tournament}>()
+)
+
+export const UpdateTournamentError = createAction(
+    '[Tournament API] Update Tournament Error',
+    props<{err: any}>()
+)
+
 export const OpenTournamentError = createAction(
     '[Tournament API] Open Tournament Error',
     props<{err: any}>()
+)
+
+export const ResetCurrentTournament = createAction(
+    '[Tournament API] Reset Current Tournament',
+)
+
+export const SetCurrentTournament = createAction(
+    '[Tournament API] Reset Current Tournament',
+    props<{tournamentId: string}>()
 )

@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { map, switchMap, tap, catchError, filter, withLatestFrom, take } from 'rxjs/operators';
+import { map, switchMap, tap, catchError, filter, withLatestFrom, take, first } from 'rxjs/operators';
 import { of, Observable, from, EMPTY } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { ROUTER_NAVIGATED } from '@ngrx/router-store';
-import { Store } from '@ngrx/store';
+import { INIT, Store } from '@ngrx/store';
 import { PlayerState } from "./player.reducer";
 import { PlayerAPIActions, PlayerPageActions } from './actions';
 import { GetPlayers } from './player.selectors';
@@ -28,12 +28,18 @@ export class PlayerEffects {
     getPlayers$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(ROUTER_NAVIGATED),
-            filter((action: any) => 
-                (action?.payload.event.url === '/manage-player-list') || 
-                (action?.payload.event.url === '/tournament-list')  
+            map((action: any) => action?.payload.event.url.split('/')),
+            filter((action: any) => {
+                action.shift();
+                return (
+                    (action[0] === 'create-tournament') || 
+                    (action[0] === 'manage-player-list') ||
+                    (action[0] === 'tournament-list')
+                );
+                }
             ),
             switchMap(() => {
-                    return this.db.collection<any>('players').get().pipe(
+                return this.db.collection<any>('players').get().pipe(
                     map((res) => {
                         let playerList = [];
                         res.forEach(d => {
@@ -50,7 +56,7 @@ export class PlayerEffects {
                     })
                 )
             }),
-            take(1),
+            // take(1), // MIGHT NEED THIS, FOR LOADING WHEN NOT DEBUGGING
         )   
     });
 

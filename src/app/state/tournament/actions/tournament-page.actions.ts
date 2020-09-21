@@ -7,6 +7,10 @@ export const CreateTournament = createAction(
     props<{tournament: Tournament}>()
 );
 
+export const UpdateTournament = createAction(
+    '[Tournament Page] Update Tournament',
+    props<{tournament: Tournament}>()
+);
 
 export const OpenTournament = createAction(
     '[Tournament Page] Open Tournament',

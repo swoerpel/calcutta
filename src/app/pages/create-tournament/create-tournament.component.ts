@@ -1,18 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Tournament } from 'src/app/models/tournament.model';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { tap, map, first, filter } from 'rxjs/operators';
+import { tap, map, first, filter, switchMap, takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
 import { Player } from 'src/app/models/player.model';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { TournamentState } from 'src/app/state/tournament/tournament.reducer';
 import { Store } from '@ngrx/store';
 import { TournamentPageActions } from 'src/app/state/tournament/actions';
 import { PlayerState } from 'src/app/state/player/player.reducer';
-import { GetPlayers } from 'src/app/state/player/player.selectors';
+import { GetPlayers, GetPlayerSet } from 'src/app/state/player/player.selectors';
 import { PlayerPageActions } from 'src/app/state/player/actions';
+import { GetCurrentTournament } from 'src/app/state/tournament/tournament.selectors';
 
 
 @Component({
@@ -20,7 +21,7 @@ import { PlayerPageActions } from 'src/app/state/player/actions';
     templateUrl: './create-tournament.component.html',
     styleUrls: ['./create-tournament.component.scss']
 })
-export class CreateTournamentComponent implements OnInit {
+export class CreateTournamentComponent implements OnInit, OnDestroy {
     
     public fargoRating = {
         min:300,
@@ -28,9 +29,9 @@ export class CreateTournamentComponent implements OnInit {
     }
 
     public tournamentFormGroup = new FormGroup({
-        name: new FormControl('big huge tournament', [Validators.required,]),
-        roomName: new FormControl('ball room', [Validators.required,]),
-        endTime: new FormControl('12:00 AM', [Validators.required,]),
+        name: new FormControl('', [Validators.required,]),
+        roomName: new FormControl('', [Validators.required,]),
+        endTime: new FormControl('', [Validators.required,]),
         duration: new FormControl('', [Validators.required,]),
         // id: new FormControl('new-tournament', [Validators.required,]),
     }) 
@@ -46,11 +47,13 @@ export class CreateTournamentComponent implements OnInit {
         ]),
     });
 
+    public tournament_id: string;
     public currentPlayers: Player[] = [];
     public existingPlayers: Player[];
     public createPlayerDropdownOpen: boolean = false;
     public existingPlayerListDropdownOpen: boolean = false;
-    
+    private unsubscribe: Subject<void> = new Subject();
+
     constructor(
         private router: Router,
         // public tournamentListService:TournamentListService,
@@ -59,20 +62,44 @@ export class CreateTournamentComponent implements OnInit {
     ) {}
     
     ngOnInit(){
+        this.tournament_id = this.router.routerState.snapshot.url.split('/')[2];
+        if(this.tournament_id === 'new-tournament'){
+            console.log('create new tournament',this.tournament_id);
+        }else{
+            this.tournamentStore.select(GetCurrentTournament).pipe(
+                filter(t => !!t),
+                switchMap((t) => {
+                    this.tournamentFormGroup.patchValue({...t});
+                    console.log("t",t.players)
+                    return this.playerStore.select(GetPlayerSet,{playerIds: t.players})
+                }),
+                filter(p => !!p),
+                takeUntil(this.unsubscribe),
+                tap((players: Player[]) => this.currentPlayers = players)
+            ).subscribe();
+        }
+
         this.tournamentFormGroup.controls.endTime.valueChanges.pipe(
             tap((endTimeValue) => {
                 let endTime = moment(endTimeValue, ["hh:mm A"]).format("HH:mm");
                 let currentTime = moment().format("HH:mm");
                 let differenceTime = moment.utc(moment(endTime,"HH:mm").diff(moment(currentTime,"HH:mm"))).format('h [hours] m [minutes]');
                 this.tournamentFormGroup.controls.duration.setValue(differenceTime);
-            })
+            }),
+            takeUntil(this.unsubscribe),
         ).subscribe();
 
         this.playerStore.select(GetPlayers).pipe(
             filter(p => !!p),
             filter(p => p.length !== 0),
-            tap(p => this.existingPlayers = p)
+            tap(p => this.existingPlayers = p),
+            takeUntil(this.unsubscribe),
         ).subscribe();
+    }
+    
+    ngOnDestroy() {
+        this.unsubscribe.next();
+        this.unsubscribe.complete();
     }
 
     public toggleAddPlayer(){
@@ -104,22 +131,34 @@ export class CreateTournamentComponent implements OnInit {
     }
 
     public createTournament(){
-        const tournament: Tournament = {
-            ...this.tournamentFormGroup.value,
-            players: [...this.currentPlayers].map(p => p.id)
+        if(this.tournament_id === 'new-tournament'){
+            const tournament: Tournament = {
+                ...this.tournamentFormGroup.value,
+                players: [...this.currentPlayers].map(p => p.id)
+            }
+            this.tournamentStore.dispatch(TournamentPageActions.CreateTournament({
+                tournament: tournament
+            }))
+        }else {
+            const tournament: Tournament = {
+                ...this.tournamentFormGroup.value,
+                players: [...this.currentPlayers].map(p => p.id),
+                id: this.tournament_id
+            }
+            this.tournamentStore.dispatch(TournamentPageActions.UpdateTournament({
+                tournament: tournament
+            }))
         }
-        this.tournamentStore.dispatch(TournamentPageActions.CreateTournament({
-            tournament: tournament
-        }))
     }
 
     public updateTournament(){
-        const tournament: Tournament = {
-            ...this.tournamentFormGroup.value,
-            players: [...this.currentPlayers]
-        }
-        // this.tournamentListService.updateTournament(tournament);
-        this.router.navigate(['/tournament-list/' + tournament.id]);
+        
+        // const tournament: Tournament = {
+        //     ...this.tournamentFormGroup.value,
+        //     players: [...this.currentPlayers]
+        // }
+        // // this.tournamentListService.updateTournament(tournament);
+        // this.router.navigate(['/tournament-list/' + tournament.id]);
     }
 
 }

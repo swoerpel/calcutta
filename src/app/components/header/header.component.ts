@@ -22,14 +22,10 @@ export class HeaderComponent implements OnInit {
 
     public isAdmin: Observable<boolean>;
     public beforeLogin: Observable<boolean>;
-    public tournament$: Observable<Tournament>;
-    public players$: Observable<Player[]>;
     constructor(
         private router: Router,
         private userStore: Store<UserState>,
         private store: Store<RouterState>,
-        private tournamentStore: Store<TournamentState>,
-        private playerStore: Store<PlayerState>,
     ) {}
 
     ngOnInit(){
@@ -37,13 +33,6 @@ export class HeaderComponent implements OnInit {
         this.beforeLogin = this.store.select(selectUrl).pipe(
             filter(url => !!url),
             map(url => url === '/login')
-        )
-        this.tournament$ = this.tournamentStore.select(GetCurrentTournament)
-
-        this.players$ = this.tournament$.pipe(
-            switchMap((t) => {
-                return this.playerStore.select(GetPlayerSet,{playerIds: t.players})
-            })
         )
 
     }

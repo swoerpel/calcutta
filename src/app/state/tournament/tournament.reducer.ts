@@ -65,6 +65,30 @@ export const tournamentReducer = createReducer<TournamentState>(
         }
     }),
 // ===============================================================================
+    on(TournamentPageActions.UpdateTournament, (state): TournamentState => {
+        return {
+            ...state,
+            updateTournamentError: null,
+        }
+    }),
+    on(TournamentAPIActions.UpdateTournamentSuccess, (state,action): TournamentState => {
+        return {
+            ...state,
+            tournamentList: state.tournamentList.map((t) => {
+                if (t.id === action.tournament.id){
+                    return action.tournament
+                }
+                return t;
+            })
+        }
+    }),
+    on(TournamentAPIActions.UpdateTournamentError, (state,action): TournamentState => {
+        return {
+            ...state,
+            updateTournamentError: action.err,
+        }
+    }),
+// ===============================================================================
     on(TournamentPageActions.OpenTournament, (state, action): TournamentState => {
         return {
             ...state,
@@ -82,6 +106,18 @@ export const tournamentReducer = createReducer<TournamentState>(
         return {
             ...state,
             tournamentId: action.tournamentId,
+        }
+    }),
+    on(TournamentAPIActions.ResetCurrentTournament, (state): TournamentState => {
+        return {
+            ...state,
+            tournamentId: null, 
+        }
+    }),
+    on(TournamentAPIActions.SetCurrentTournament, (state, action): TournamentState => {
+        return {
+            ...state,
+            tournamentId: action.tournamentId, 
         }
     }),
 
