@@ -35,14 +35,5 @@ export class TournamentComponent implements OnInit {
             })
         )
 
-        this.players$.subscribe(p => console.log("p",p))
-
-        // this.players$ = this.playerStore.select(GetCurrentPlayers);
-        // this.players = this.tournament.pipe(
-        //     switchMap((t) => {
-        //         this.playerStore.select(GetPlayerSet())
-        //     })
-        // )
-        this.tournament.subscribe(t => console.log('t',t))
     }
 }

@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { tap } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { filter, map, tap } from 'rxjs/operators';
+import { UserState } from 'src/app/state/user/user.reducer';
+import { GetCurrentUser } from 'src/app/state/user/user.selectors';
 
 @Component({
     selector: 'app-settings',
@@ -9,13 +12,17 @@ import { tap } from 'rxjs/operators';
 })
 export class SettingsPageComponent implements OnInit {
 
+    public currentUser$: Observable<any>;
+
     constructor(
-        private router: Router,
+        private userStore: Store<UserState>
     ) {}
 
     ngOnInit(){
+        this.currentUser$ = this.userStore.select(GetCurrentUser).pipe(
+            filter(p => !!p),
+        )
     }
-
 
     resetPassword(){
 

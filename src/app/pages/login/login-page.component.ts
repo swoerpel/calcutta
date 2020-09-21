@@ -34,7 +34,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
         email: new FormControl('steve.woerpel@gmail.com',[
             Validators.required,
         ]),
-        password: new FormControl('swoerpel',[
+        password: new FormControl('11111111',[
             Validators.required,
         ]),
         passwordRepeat: new FormControl('', [

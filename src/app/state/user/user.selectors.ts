@@ -1,4 +1,4 @@
-import { createFeatureSelector, createSelector } from "@ngrx/store"
+    import { createFeatureSelector, createSelector } from "@ngrx/store"
 import { UserState } from "./user.reducer";
 
 const getUserFeatureState = createFeatureSelector<UserState>('user');
@@ -16,5 +16,17 @@ export const getRegisterError = createSelector(
 export const getAdminStatus = createSelector(
     getUserFeatureState,
     (state: UserState) => state?.isAdmin
+)
+
+export const GetCurrentUser = createSelector(
+    getUserFeatureState,
+    (state: UserState) => {
+        const name = state?.currentUser.displayName.split('_');
+        return {
+            ...state?.currentUser,
+            firstName: name[0],
+            lastName: name[1],
+        }
+    }
 )
 
