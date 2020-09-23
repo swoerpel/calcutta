@@ -6,12 +6,12 @@ import { tap, map, first, filter, switchMap, takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
 import { Player } from 'src/app/models/player.model';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Observable, Subject } from 'rxjs';
+import { combineLatest, Observable, Subject } from 'rxjs';
 import { TournamentState } from 'src/app/state/tournament/tournament.reducer';
 import { Store } from '@ngrx/store';
 import { TournamentPageActions } from 'src/app/state/tournament/actions';
 import { PlayerState } from 'src/app/state/player/player.reducer';
-import { GetPlayers, GetPlayerSet } from 'src/app/state/player/player.selectors';
+import { GetAllPlayers, GetPlayerSet } from 'src/app/state/player/player.selectors';
 import { PlayerPageActions } from 'src/app/state/player/actions';
 import { GetCurrentTournament } from 'src/app/state/tournament/tournament.selectors';
 
@@ -52,6 +52,7 @@ export class CreateTournamentComponent implements OnInit, OnDestroy {
     public existingPlayers: Player[];
     public createPlayerDropdownOpen: boolean = false;
     public existingPlayerListDropdownOpen: boolean = false;
+    private refreshExistingPlayers$: Subject<void> = new Subject();
     private unsubscribe: Subject<void> = new Subject();
 
     constructor(
@@ -89,12 +90,14 @@ export class CreateTournamentComponent implements OnInit, OnDestroy {
             takeUntil(this.unsubscribe),
         ).subscribe();
 
-        this.playerStore.select(GetPlayers).pipe(
-            filter(p => !!p),
-            filter(p => p.length !== 0),
-            tap(p => this.existingPlayers = p),
+        combineLatest([
+            this.playerStore.select(GetAllPlayers).pipe(filter(p => !!p),filter(p => p.length !== 0)),
+            this.refreshExistingPlayers$,
+        ]).pipe(
+            tap(([p]) => this.existingPlayers = p.filter(pl => !this.currentPlayers.find(pla => pla.id === pl.id))),
             takeUntil(this.unsubscribe),
         ).subscribe();
+        this.refreshExistingPlayers$.next();
     }
     
     ngOnDestroy() {
@@ -112,6 +115,7 @@ export class CreateTournamentComponent implements OnInit, OnDestroy {
 
     public onSelectExistingPlayer(player: Player){
         this.currentPlayers.push(player)
+        this.refreshExistingPlayers$.next();
     }
 
     public onSelectCurrentPlayer(player: Player){

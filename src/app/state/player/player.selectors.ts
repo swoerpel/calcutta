@@ -3,7 +3,7 @@ import { PlayerState } from "./player.reducer";
 
 const getPlayerFeatureState = createFeatureSelector<PlayerState>('player');
 
-export const GetPlayers = createSelector(
+export const GetAllPlayers = createSelector(
     getPlayerFeatureState,
     (state: PlayerState) => {
         return state.playerList;

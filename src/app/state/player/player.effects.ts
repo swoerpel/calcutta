@@ -8,7 +8,7 @@ import { ROUTER_NAVIGATED } from '@ngrx/router-store';
 import { INIT, Store } from '@ngrx/store';
 import { PlayerState } from "./player.reducer";
 import { PlayerAPIActions, PlayerPageActions } from './actions';
-import { GetPlayers } from './player.selectors';
+import { GetAllPlayers } from './player.selectors';
 import { playerExists } from '../../shared/helpers';
 
 @Injectable({
@@ -64,7 +64,7 @@ export class PlayerEffects {
     createAndUpdatePlayer$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(PlayerPageActions.CreatePlayer, PlayerPageActions.UpdatePlayer),
-            withLatestFrom(this.playerStore.select(GetPlayers)),
+            withLatestFrom(this.playerStore.select(GetAllPlayers)),
             switchMap(([cuPayload,players]) => {
                 if(cuPayload.type === PlayerPageActions.UpdatePlayer.type){
                     if (playerExists(players.filter(p => p.id !== cuPayload.player.id), cuPayload.player)){
