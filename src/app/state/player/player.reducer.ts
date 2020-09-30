@@ -9,6 +9,7 @@ export interface PlayerState {
     createPlayerError: any;
     updatePlayerError: any;
     deletePlayerError: any;
+    updatePlayerBetError: any;
 }
 
 const initialState: PlayerState = {
@@ -18,6 +19,7 @@ const initialState: PlayerState = {
     createPlayerError: null,
     updatePlayerError: null,
     deletePlayerError: null,
+    updatePlayerBetError: null,
 }
 
 export const playerReducer = createReducer<PlayerState>(
@@ -103,6 +105,33 @@ export const playerReducer = createReducer<PlayerState>(
         return {
             ...state,
             deletePlayerError: action.err
+        }
+    }),
+    // =============================================================================
+    on(PlayerPageActions.UpdatePlayerBetValue, (state,action): PlayerState => {
+        return {
+            ...state,
+            updatePlayerBetError: null,
+        }
+    }),
+    on(PlayerAPIActions.UpdatePlayerBetValueSuccess, (state,action): PlayerState => {
+        return {
+            ...state,
+            playerList: state.playerList.map((player: Player) => {
+                if(player.id === action.playerId){
+                    return {
+                        ...player,
+                        betValue: action.betValue
+                    }
+                }
+                return player;
+            })
+        }
+    }),
+    on(PlayerAPIActions.UpdatePlayerBetValueError, (state, action): PlayerState => {
+        return {
+            ...state,
+            updatePlayerBetError: action.err,
         }
     }),
     // =============================================================================

@@ -2,46 +2,57 @@ import {createAction, props} from '@ngrx/store';
 import { Player } from 'src/app/models/player.model';
 
 export const GetPlayers = createAction(
-    '[Players API] Get Players',
+    '[Players API Action] Get Players',
 )
 
 export const GetPlayersSuccess = createAction(
-    '[Players API] Get Players Success',
+    '[Players API Action] Get Players Success',
     props<{playerList: Player[]}>()
 )
 
 export const GetPlayersError = createAction(
-    '[Players API] Get Players Error',
+    '[Players API Action] Get Players Error',
     props<{err: any}>()
 )
 
 export const CreatePlayerSuccess = createAction(
-    '[Players API] Create Player Success',
+    '[Players API Action] Create Player Success',
     props<{player: Player}>()
 )
 
 export const CreatePlayerError = createAction(
-    '[Players API] Create Player Error',
+    '[Players API Action] Create Player Error',
     props<{err: any}>()
 )
 
 export const UpdatePlayerSuccess = createAction(
-    '[Players API] Update Player Success',
+    '[Players API Action] Update Player Success',
     props<{player: Player}>()
 )
 
 export const UpdatePlayerError = createAction(
-    '[Players API] Update Player Error',
+    '[Players API Action] Update Player Error',
     props<{err: any}>()
 )
 
 export const DeletePlayerSuccess = createAction(
-    '[Players API] Delete Player Success',
+    '[Players API Action] Delete Player Success',
     props<{playerId: string}>()
 )
 
 export const DeletePlayerError = createAction(
-    '[Players API] Delete Player Error',
+    '[Players API Action] Delete Player Error',
+    props<{err: any}>()
+)
+
+
+export const UpdatePlayerBetValueSuccess = createAction(
+    '[Players API Action] Update Player Bet Value Success',
+    props<{playerId:string, betValue: number}>()
+)
+
+export const UpdatePlayerBetValueError = createAction(
+    '[Players API Action] Update Player Bet Value Error',
     props<{err: any}>()
 )
 

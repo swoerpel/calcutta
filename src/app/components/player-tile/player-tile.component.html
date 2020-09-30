@@ -4,20 +4,25 @@
         <div class="col col__player col__subtitle">Fargo Rating: {{player.fargoRating}}</div>
     </div>
     <div class="col col__betting">
-        <div class="col col__betting col__title">${{player.currentBetPrice}}</div>
+        <div class="col col__betting col__title">${{player.betValue}}</div>
         <div class="col col__betting col__subtitle">{{topBidder.firstName}} {{topBidder.lastName}}</div>
     </div>
     <div class="col col__betting">
-        <div class="col col__betting col__title">${{player.currentBetPrice - 5}}</div>
-        <div class="col col__betting col__subtitle">Max: ${{player.currentBetPrice + 10}}</div>
+
+        <!-- user value -->
+        <div class="col col__betting col__title">0</div>
+        <div class="col col__betting col__subtitle">Max Bet</div>
     </div>
 </div>
 <div class="row row__input">
     <div class="col col__input">
-        <input type="text" class="bet bet__input" placeholder="$0">
+        <input [formControl]="betInput" 
+               type="text" 
+               class="bet bet__input" 
+               placeholder="$0">
     </div>
     <div class="col col__button">
-        <button class="bet bet__button">Place Bet</button>
+        <button class="bet bet__button" (click)="onUpdateBetValue()">Place Bet</button>
     </div>
     <div class="col col__button">
         <button class="bet bet__button">Set Max</button>
