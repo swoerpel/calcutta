@@ -64,7 +64,7 @@ export class ManagePlayerListComponent implements OnInit {
         this.playerStore.select(GetAllPlayers).pipe(
             filter(p => !!p),
             filter(p => p.length !== 0),
-            tap(p => this.playerList = p)
+            tap(p => this.playerList = p),
         ).subscribe();
 
         this.snackbarError = this.playerStore.select(GetCreatePlayerError).pipe(

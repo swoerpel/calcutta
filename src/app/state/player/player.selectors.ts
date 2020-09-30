@@ -21,7 +21,16 @@ export const GetCreatePlayerError = createSelector(
 export const GetPlayerSet = createSelector(
     getPlayerFeatureState,
     (state: PlayerState,props: { playerIds: string[]}) => {
-        return state.playerList?.filter(p => props.playerIds.indexOf(p.id) !== -1);
+        return state.playerList?.filter((p) => {
+            return props.playerIds?.indexOf(p.id) !== -1;
+        });
+    }
+)
+
+export const GetTempPlayerList = createSelector(
+    getPlayerFeatureState,
+    (state: PlayerState) =>  {
+        return state.tempPlayerList
     }
 )
 

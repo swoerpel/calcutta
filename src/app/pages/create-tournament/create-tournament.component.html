@@ -1,5 +1,4 @@
 <div class="section section__tournament-input">
-    <div class="title">Create Tournament</div>
     <div class="title">{{tournament_id === 'new-tournament' ? 'Create' : 'Update'}} Tournament</div>
     <mat-form-field appearance="outline">
         <mat-label>Tournament Name</mat-label>
@@ -71,6 +70,7 @@
     </ng-container>
 </div>
 
+
 <div class="section section__player-list">
     <div class="title">
         <span>Add Existing Player</span>
@@ -83,23 +83,28 @@
             </mat-icon>
         </span>
     </div>
-    <ng-container *ngIf="existingPlayerListDropdownOpen">
-        <player-list [playerList]="existingPlayers" (playerSelected)="onSelectExistingPlayer($event)"></player-list>
+    <ng-container *ngIf="(existingPlayers$ | async) as existingPlayers">
+        <ng-container *ngIf="existingPlayerListDropdownOpen">
+            <player-list [playerList]="existingPlayers" (playerSelected)="onSelectExistingPlayer($event)"></player-list>
+        </ng-container>
     </ng-container>
 </div>
 
-<!-- WHERE EXISTING PLAYER LIST IS DISPLAYED -->
-<div class="section section__player-list">
-    <div class="title"><span>Current Players</span></div>
-    <player-list [playerList]="currentPlayers" (playerSelected)="onSelectCurrentPlayer($event)"></player-list>
-</div>
-
-
-<footer class="footer">
-    <button (click)="createTournament()" 
-            [disabled]="tournamentFormGroup.controls.name.invalid || tournamentFormGroup.controls.endTime.invalid"
-            mat-raised-button>
-        {{tournament_id === 'new-tournament'  ? 'Create Tournament' : 'Update Tournament'}}
-    </button>
-</footer>
-
+<ng-container *ngIf="(currentPlayers$ | async) as currentPlayers">
+    <div class="section section__player-list">
+        <div class="title"><span>Current Players</span></div>
+        <player-list [playerList]="currentPlayers" (playerSelected)="onSelectCurrentPlayer($event)"></player-list>
+    </div>
+    <footer class="footer">
+        <button (click)="createTournament(currentPlayers)" 
+                [disabled]="tournamentFormGroup.controls.name.invalid || tournamentFormGroup.controls.endTime.invalid"
+                mat-raised-button>
+            {{tournament_id === 'new-tournament'  ? 'Create Tournament' : 'Update Tournament'}}
+        </button>
+        <button *ngIf="tournament_id !== 'new-tournament'"(click)="deleteTournament()" 
+                [disabled]="tournamentFormGroup.controls.name.invalid || tournamentFormGroup.controls.endTime.invalid"
+                mat-raised-button>
+            Delete
+        </button>
+    </footer>
+</ng-container>

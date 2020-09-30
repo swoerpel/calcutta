@@ -53,6 +53,21 @@ export class TournamentEffects {
         )   
     });
 
+    deleteTournament$ = createEffect(() => {
+        return this.actions$.pipe(
+            ofType(TournamentPageActions.DeleteTournament),
+            switchMap((action) => {
+                    return from(this.db.collection<any>('tournaments').doc(action.tournamentId).delete()).pipe(
+                        map(() => {
+                            this.router.navigate(['/tournament-list']);
+                            return TournamentAPIActions.DeleteTournamentSuccess({tournamentId: action.tournamentId})
+                        }),
+                        catchError((err) => of(TournamentAPIActions.DeleteTournamentError({err: err})))
+                )
+            }),
+        )   
+    });
+
     resetCurrentTournament$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(ROUTER_NAVIGATED),
@@ -85,6 +100,7 @@ export class TournamentEffects {
                 if(cuPayload.type === TournamentPageActions.UpdateTournament.type){
                     return from(this.db.collection<any>('tournaments').doc(cuPayload.tournament.id).update(cuPayload.tournament)).pipe(
                         map(() => {
+                            this.router.navigate(['/tournament-list']);
                             return TournamentAPIActions.UpdateTournamentSuccess({tournament: {
                                 ...cuPayload.tournament,
                             }})
@@ -94,6 +110,7 @@ export class TournamentEffects {
                 }else{
                     return from(this.db.collection<any>('tournaments').add(cuPayload.tournament)).pipe(
                         map((res) => {
+                            this.router.navigate(['/tournament-list']);
                             return TournamentAPIActions.CreateTournamentSuccess({tournament: {
                                 ...cuPayload.tournament,
                                 id:res.id

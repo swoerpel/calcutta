@@ -4,6 +4,7 @@ import { PlayerAPIActions, PlayerPageActions } from './actions';
 
 export interface PlayerState {
     playerList: Player[];
+    tempPlayerList: Player[];
     getPlayersError: any;
     createPlayerError: any;
     updatePlayerError: any;
@@ -12,6 +13,7 @@ export interface PlayerState {
 
 const initialState: PlayerState = {
     playerList: null,
+    tempPlayerList: null,
     getPlayersError: null,
     createPlayerError: null,
     updatePlayerError: null,
@@ -101,6 +103,29 @@ export const playerReducer = createReducer<PlayerState>(
         return {
             ...state,
             deletePlayerError: action.err
+        }
+    }),
+    // =============================================================================
+    on(PlayerPageActions.AddTempPlayer, (state,action): PlayerState => {
+        return {
+            ...state,
+            tempPlayerList: [...state.tempPlayerList, action.player]
+        }
+    }),
+    on(PlayerPageActions.SetTempPlayerList, (state,action): PlayerState => {
+        let players = [];
+        if(action.playerIds.length !== 0)
+            players = state.playerList.filter((player) => action.playerIds.indexOf(player.id) !== -1)
+        console.log('setting temp player list', players)
+        return {
+            ...state,
+            tempPlayerList: players
+        }
+    }),
+    on(PlayerPageActions.ResetTempPlayerList, (state): PlayerState => {
+        return {
+            ...state,
+            tempPlayerList: []
         }
     }),
 

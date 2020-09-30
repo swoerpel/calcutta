@@ -27,6 +27,5 @@ export class PlayerTileComponent implements OnInit {
     constructor() {}
 
     ngOnInit(){
-        console.log('player tile loaded' ,this.player)
     }
 }

@@ -16,3 +16,17 @@ export const UpdatePlayer = createAction(
     '[Player Page] Update Player',
     props<{player: Player}>()
 );
+
+export const AddTempPlayer = createAction(
+    '[Player Page] Add Temp Player',
+    props<{player: Player}>()
+);
+
+export const SetTempPlayerList = createAction(
+    '[Player Page] Set Temp Player List',
+    props<{playerIds: string[]}>()
+);
+
+export const ResetTempPlayerList = createAction(
+    '[Player Page] Reset Temp Player List',
+);

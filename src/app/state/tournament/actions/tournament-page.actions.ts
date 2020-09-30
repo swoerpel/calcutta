@@ -16,3 +16,8 @@ export const OpenTournament = createAction(
     '[Tournament Page] Open Tournament',
     props<{tournamentId: string}>()
 );
+
+export const DeleteTournament = createAction(
+    '[Tournament Page] Delete Tournament',
+    props<{tournamentId: string}>()
+);
