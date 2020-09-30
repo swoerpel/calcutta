@@ -114,4 +114,21 @@ export class PlayerEffects {
         )
     })
 
+    updatePlayerBetValue$ = createEffect(() => {
+        return this.actions$.pipe(
+            ofType(PlayerPageActions.UpdatePlayerBetValue),
+            switchMap((payload) => {
+                return from(this.db.collection<any>('players').doc(payload.playerId).update({betValue: payload.betValue})).pipe(
+                    map(() => {
+                        return PlayerAPIActions.UpdatePlayerBetValueSuccess({
+                            playerId: payload.playerId,
+                            betValue: payload.betValue
+                        });
+                    }),
+                    catchError(err => of(PlayerAPIActions.UpdatePlayerBetValueError({err: err})))
+                )
+            }),
+        )
+    })
+
 }

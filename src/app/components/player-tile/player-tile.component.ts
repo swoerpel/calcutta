@@ -1,5 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
+import { Store } from '@ngrx/store';
 import { Player } from 'src/app/models/player.model';
+import { UpdatePlayerBetValue } from 'src/app/state/player/actions/player-page.actions';
+import { PlayerState } from 'src/app/state/player/player.reducer';
 
 @Component({
     selector: 'player-tile',
@@ -12,9 +16,6 @@ export class PlayerTileComponent implements OnInit {
     public topBidder: Player = {
         firstName: 'Stetson',
         lastName: 'W',
-        id: '11111111',
-        currentBetPrice: 135,
-        fargoRating: 455,
     };
 
     public tiles: any = {
@@ -23,9 +24,21 @@ export class PlayerTileComponent implements OnInit {
         betting: {text: 'Betting', cols: 4, rows: 1, color: '#DDBDF1'},
     };
 
+    public betInput: FormControl = new FormControl(0,[Validators.required])
 
-    constructor() {}
+    constructor(
+        private playerStore: Store<PlayerState>,
+    ) {}
 
     ngOnInit(){
+
+    }
+
+    onUpdateBetValue(){
+
+        this.playerStore.dispatch(UpdatePlayerBetValue({
+            playerId: this.player.id,
+            betValue: this.betInput.value
+        }));
     }
 }
