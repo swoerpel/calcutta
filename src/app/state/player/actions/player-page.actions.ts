@@ -22,6 +22,11 @@ export const AddTempPlayer = createAction(
     props<{player: Player}>()
 );
 
+export const RemoveTempPlayer = createAction(
+    '[Player Page] Remove Temp Player',
+    props<{player: Player}>()
+);
+
 export const SetTempPlayerList = createAction(
     '[Player Page] Set Temp Player List',
     props<{playerIds: string[]}>()

@@ -8,6 +8,17 @@
                     (click)="onSelectPlayer(player)"
                     [value]="player" 
                     class="player-list-item">
-    {{player.firstName}} {{player.lastName}} {{player.fargoRating}}
+        <div class="option">
+            <div class="option-text">{{player.firstName}} {{player.lastName}} {{player.fargoRating}}</div>
+            <div class="secondary-action"> 
+                <mat-icon *ngIf="secondaryAction" 
+                          (click)="onSecondaryAction(player)"
+                          class="secondary-action-icon" 
+                          aria-hidden="false" 
+                          aria-label="remove player">
+                          remove_circle_outline
+                </mat-icon>
+            </div>
+        </div>
     </mat-list-option>
 </mat-selection-list>

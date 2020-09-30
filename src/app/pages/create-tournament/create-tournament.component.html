@@ -93,7 +93,11 @@
 <ng-container *ngIf="(currentPlayers$ | async) as currentPlayers">
     <div class="section section__player-list">
         <div class="title"><span>Current Players</span></div>
-        <player-list [playerList]="currentPlayers" (playerSelected)="onSelectCurrentPlayer($event)"></player-list>
+        <player-list [playerList]="currentPlayers" 
+                     (playerSelected)="onSelectCurrentPlayer($event)"
+                     [secondaryAction]="true"
+                     (secondaryActionEvent)="onRemovePlayer($event)">
+        </player-list>
     </div>
     <footer class="footer">
         <button (click)="createTournament(currentPlayers)" 

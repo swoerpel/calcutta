@@ -13,7 +13,7 @@ import { PlayerState } from 'src/app/state/player/player.reducer';
 import { GetAllPlayers, GetPlayerSet, GetTempPlayerList } from 'src/app/state/player/player.selectors';
 import { PlayerPageActions } from 'src/app/state/player/actions';
 import { GetCurrentTournament } from 'src/app/state/tournament/tournament.selectors';
-import { AddTempPlayer, ResetTempPlayerList, SetTempPlayerList } from 'src/app/state/player/actions/player-page.actions';
+import { AddTempPlayer, RemoveTempPlayer, ResetTempPlayerList, SetTempPlayerList } from 'src/app/state/player/actions/player-page.actions';
 
 
 @Component({
@@ -65,9 +65,10 @@ export class CreateTournamentComponent implements OnInit, OnDestroy {
 
         this.tournamentStore.select(GetCurrentTournament).pipe(
             tap((tournament: Tournament) => {
-                if(tournament?.players !== undefined)
+                if(tournament?.players !== undefined){
+                    this.tournamentFormGroup.patchValue({...tournament})
                     this.playerStore.dispatch(SetTempPlayerList({playerIds: tournament.players}));
-                else
+                }else
                     this.playerStore.dispatch(SetTempPlayerList({playerIds: []}));
             }),
             takeUntil(this.unsubscribe),
@@ -120,6 +121,11 @@ export class CreateTournamentComponent implements OnInit, OnDestroy {
 
     public onSelectCurrentPlayer(player: Player){
 
+    }
+
+    public onRemovePlayer(player: Player){
+        console.log('removePlayer', player)
+        this.playerStore.dispatch(RemoveTempPlayer({player:player}))
     }
 
     public createPlayer(){

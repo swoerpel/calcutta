@@ -1,15 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Player } from 'src/app/models/player.model';
 import { Tournament } from 'src/app/models/tournament.model';
-import { PlayerState } from 'src/app/state/player/player.reducer';
-import { Store } from '@ngrx/store';
-import { filter } from 'rxjs/internal/operators/filter';
-import { tap } from 'rxjs/operators';
-import { PlayerPageActions } from 'src/app/state/player/actions';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { SnackbarErrorComponent } from 'src/app/shared/error-snackbar/error-snackbar.component';
 
 
 @Component({
@@ -19,7 +11,9 @@ import { SnackbarErrorComponent } from 'src/app/shared/error-snackbar/error-snac
 })
 export class PlayerListComponent implements OnChanges {
     @Input() playerList: Player[];
+    @Input() secondaryAction: boolean = false;
     @Output() playerSelected: EventEmitter<Player> = new EventEmitter();
+    @Output() secondaryActionEvent: EventEmitter<Player> = new EventEmitter();
 
     public playerInput: string;
 
@@ -30,6 +24,10 @@ export class PlayerListComponent implements OnChanges {
     
     public onSelectPlayer(player: Player){
         this.playerSelected.emit(player)
+    }
+    
+    public onSecondaryAction(player: Player){
+        this.secondaryActionEvent.emit(player)
     }
 
     ngOnChanges(){

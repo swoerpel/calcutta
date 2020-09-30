@@ -112,6 +112,12 @@ export const playerReducer = createReducer<PlayerState>(
             tempPlayerList: [...state.tempPlayerList, action.player]
         }
     }),
+    on(PlayerPageActions.RemoveTempPlayer, (state,action): PlayerState => {
+        return {
+            ...state,
+            tempPlayerList: state.tempPlayerList.filter(p => p.id !== action.player.id)
+        }
+    }),
     on(PlayerPageActions.SetTempPlayerList, (state,action): PlayerState => {
         let players = [];
         if(action.playerIds.length !== 0)
