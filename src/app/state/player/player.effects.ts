@@ -9,7 +9,7 @@ import { PlayerState } from "./player.reducer";
 import { PlayerAPIActions, PlayerPageActions } from './actions';
 import { GetAllPlayers } from './player.selectors';
 import { playerExists } from '../../shared/helpers';
-import { PlayerApiService } from 'src/app/services/playerApi.service';
+import { PlayerApiService } from 'src/app/services/player-api.service';
 import { Player } from 'src/app/models/player.model';
 
 @Injectable({

@@ -37,7 +37,6 @@ export class PlayerApiService {
                         id: d.id,
                     } as Player)
                 });
-                console.log(playerList)
                 return playerList;
             })
         );

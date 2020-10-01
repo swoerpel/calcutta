@@ -2,15 +2,14 @@ import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { map, switchMap, tap, catchError, filter, withLatestFrom, take } from 'rxjs/operators';
 import { of, Observable, from, EMPTY } from 'rxjs';
-import { AngularFireAuth } from '@angular/fire/auth';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { AngularFireDatabase } from '@angular/fire/database';
 import { Router } from '@angular/router';
 import { TournamentPageActions,TournamentAPIActions } from './actions';
 import { UserAPIActions } from '../user/actions';
 import { routerNavigatedAction, ROUTER_NAVIGATED } from '@ngrx/router-store';
 import { TournamentState } from './tournament.reducer';
 import { INIT, Store } from '@ngrx/store';
+import { TournamentApiService } from 'src/app/services/tournament-api.service';
+import { Tournament } from 'src/app/models/tournament.model';
 
 @Injectable({
     providedIn: 'root'
@@ -20,7 +19,7 @@ export class TournamentEffects {
 
     constructor( 
         private actions$: Actions,
-        private db: AngularFirestore,
+        private tournamentApiService: TournamentApiService,
         private tournamentStore: Store<TournamentState>,
         private router: Router,
     ){ 
@@ -32,17 +31,8 @@ export class TournamentEffects {
             ofType(ROUTER_NAVIGATED,INIT),
             // filter((action: any) => action?.payload.event.url === '/tournament-list'),
             switchMap((action) => {
-                    return this.db.collection<any>('tournaments').get().pipe(
-                    map((res) => {
-                        let tournamentList = [];
-                        res.forEach(d => {
-                            tournamentList.push({
-                                ...d.data(),
-                                id: d.id,
-                            })
-                        });
-                        return TournamentAPIActions.GetTournamentsSuccess({tournamentList: tournamentList})
-                    }),
+                    return this.tournamentApiService.getTournaments().pipe(
+                    map((tournamentList: Tournament[]) => TournamentAPIActions.GetTournamentsSuccess({tournamentList: tournamentList})),
                     catchError((err) => {
                         this.tournamentStore.dispatch(TournamentAPIActions.GetTournamentsError({err: err}))
                         return EMPTY;
@@ -57,7 +47,7 @@ export class TournamentEffects {
         return this.actions$.pipe(
             ofType(TournamentPageActions.DeleteTournament),
             switchMap((action) => {
-                    return from(this.db.collection<any>('tournaments').doc(action.tournamentId).delete()).pipe(
+                    return this.tournamentApiService.deleteTournament(action.tournamentId).pipe(
                         map(() => {
                             this.router.navigate(['/tournament-list']);
                             return TournamentAPIActions.DeleteTournamentSuccess({tournamentId: action.tournamentId})
@@ -92,36 +82,23 @@ export class TournamentEffects {
         )   
     });
 
-    // will need update still
     createAndUpdateTournament$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(TournamentPageActions.CreateTournament, TournamentPageActions.UpdateTournament),
             switchMap((cuPayload) => {
+                this.router.navigate(['/tournament-list']);
                 if(cuPayload.type === TournamentPageActions.UpdateTournament.type){
-                    return from(this.db.collection<any>('tournaments').doc(cuPayload.tournament.id).update(cuPayload.tournament)).pipe(
-                        map(() => {
-                            this.router.navigate(['/tournament-list']);
-                            return TournamentAPIActions.UpdateTournamentSuccess({tournament: {
-                                ...cuPayload.tournament,
-                            }})
-                        }),
+                    return this.tournamentApiService.updateTournament(cuPayload.tournament).pipe(
+                        map(() => TournamentAPIActions.UpdateTournamentSuccess({tournament: {...cuPayload.tournament}})),
                         catchError(err => of(TournamentAPIActions.UpdateTournamentError({err: err})))
                     )
                 }else{
-                    return from(this.db.collection<any>('tournaments').add(cuPayload.tournament)).pipe(
-                        map((res) => {
-                            this.router.navigate(['/tournament-list']);
-                            return TournamentAPIActions.CreateTournamentSuccess({tournament: {
-                                ...cuPayload.tournament,
-                                id:res.id
-                            }})
-                        }),
+                    return this.tournamentApiService.createTournament(cuPayload.tournament).pipe(
+                        map((tournamentId) => TournamentAPIActions.CreateTournamentSuccess({tournament: { ...cuPayload.tournament, id:tournamentId }})),
                         catchError(err => of(TournamentAPIActions.CreateTournamentError({err: err})))
                     )
                 }
-
             }),
-
         )
     })
 
