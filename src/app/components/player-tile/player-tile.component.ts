@@ -42,3 +42,11 @@ export class PlayerTileComponent implements OnInit {
         }));
     }
 }
+
+
+
+//++++++++++++++++++++++++++++++++++++++++++++
+// 1: give players collection of bet values per tournament ID they are in
+// 2: add integration with User to display top bidders name
+// 3: Add "start betting time" button when editing a tournament
+// 4: Add elapse timer on tournament view 

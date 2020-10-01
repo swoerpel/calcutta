@@ -36,6 +36,7 @@ import { UserEffects } from './state/user/user.effects';
 import { TournamentEffects } from './state/tournament/tournament.effects';
 import { PlayerEffects } from './state/player/player.effects';
 import { PlayerListComponent } from './components/player-list/player-list.component';
+import { PlayerApiService } from './services/playerApi.service';
 
 
 
@@ -92,6 +93,7 @@ export const routerStateConfig = {
   ],
   providers: [
     AuthGuard,
+    PlayerApiService,
   ],
   bootstrap: [AppComponent]
 })

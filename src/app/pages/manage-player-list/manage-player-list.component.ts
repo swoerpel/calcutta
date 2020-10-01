@@ -35,8 +35,8 @@ export class ManagePlayerListComponent implements OnInit {
     public players$: Observable<Player[]>;
 
     public selectedPlayer: Player = {
-        firstName: 'selected',
-        lastName: 'player',
+        firstName: null,
+        lastName: null,
     };
 
     public playerFormGroup = new FormGroup({

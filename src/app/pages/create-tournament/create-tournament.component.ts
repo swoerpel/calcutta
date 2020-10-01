@@ -113,9 +113,6 @@ export class CreateTournamentComponent implements OnInit, OnDestroy {
     }
 
     public onSelectExistingPlayer(player: Player){
-        // this.currentPlayers.push(player)
-        // this.refreshExistingPlayers$.next(player);
-        console.log('player',player)
         this.playerStore.dispatch(AddTempPlayer({player:player}))
     }
 
@@ -124,7 +121,6 @@ export class CreateTournamentComponent implements OnInit, OnDestroy {
     }
 
     public onRemovePlayer(player: Player){
-        console.log('removePlayer', player)
         this.playerStore.dispatch(RemoveTempPlayer({player:player}))
     }
 
@@ -136,28 +132,24 @@ export class CreateTournamentComponent implements OnInit, OnDestroy {
         this.playerStore.dispatch(PlayerPageActions.CreatePlayer({
             player: player
         }))
-        // this.currentPlayers.push(player)
         this.playerFormGroup.reset();
     }
 
     public createTournament(currentPlayers){
-        console.log("currentPlayers, create/update",currentPlayers)
+        const tournament: Tournament = {
+            ...this.tournamentFormGroup.value,
+            players: [...currentPlayers].map(p => p.id)
+        }
         if(this.tournament_id === 'new-tournament'){
-            const tournament: Tournament = {
-                ...this.tournamentFormGroup.value,
-                players: [...currentPlayers].map(p => p.id)
-            }
             this.tournamentStore.dispatch(TournamentPageActions.CreateTournament({
                 tournament: tournament
             }))
         }else {
-            const tournament: Tournament = {
-                ...this.tournamentFormGroup.value,
-                players: [...currentPlayers].map(p => p.id),
-                id: this.tournament_id
-            }
             this.tournamentStore.dispatch(TournamentPageActions.UpdateTournament({
-                tournament: tournament
+                tournament: {
+                    ...tournament,
+                    id: this.tournament_id
+                }
             }))
         }
     }
