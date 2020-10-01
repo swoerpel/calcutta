@@ -11,6 +11,7 @@ import { GetAllPlayers } from './player.selectors';
 import { playerExists } from '../../shared/helpers';
 import { PlayerApiService } from 'src/app/services/player-api.service';
 import { Player } from 'src/app/models/player.model';
+import { TournamentAPIActions } from '../tournament/actions';
 
 @Injectable({
     providedIn: 'root'
@@ -110,29 +111,17 @@ export class PlayerEffects {
         )
     })
 
-    // createPlayerTournamentCollection$ = createEffect(() => {
-    //     return this.actions$.pipe(
-    //         ofType(TournamentAPIActions.CreateTournamentSuccess),
-            // switchMap((payload) => {
-
-
-
-                // console.log('payload createPlayerTournamentCollection',payload)
-                // console.log(payload.tournament.players.)
-                // this.db.collection<any>('Players').doc(payload.pl)
-                // return of(TournamentAPIActions.CreateTournamentSuccess({tournament: payload.tournament}));
-                // return from(this.db.collection<any>('players').doc(payload.playerId).update({betValue: payload.betValue})).pipe(
-                //     map(() => {
-                //         return PlayerAPIActions.UpdatePlayerBetValueSuccess({
-                //             playerId: payload.playerId,
-                //             betValue: payload.betValue
-                //         });
-                //     }),
-                //     catchError(err => of(PlayerAPIActions.UpdatePlayerBetValueError({err: err})))
-        //         // )
-        //     }),
-        // )
-    // })
+    createPlayerTournamentCollection$ = createEffect(() => {
+        return this.actions$.pipe(
+            ofType(TournamentAPIActions.CreateTournamentSuccess),
+            switchMap((payload) => {
+                return this.playerApiService.registerPlayers(payload.tournament).pipe(
+                    map(() => PlayerAPIActions.RegisterPlayersSuccess()),
+                    catchError(err => of(PlayerAPIActions.RegisterPlayersError({err: err})))
+                )
+            }),
+        )
+    })
 
 
    

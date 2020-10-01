@@ -4,8 +4,7 @@ import { map, switchMap, tap, catchError, filter, withLatestFrom, take } from 'r
 import { of, Observable, from, EMPTY } from 'rxjs';
 import { Router } from '@angular/router';
 import { TournamentPageActions,TournamentAPIActions } from './actions';
-import { UserAPIActions } from '../user/actions';
-import { routerNavigatedAction, ROUTER_NAVIGATED } from '@ngrx/router-store';
+import { ROUTER_NAVIGATED } from '@ngrx/router-store';
 import { TournamentState } from './tournament.reducer';
 import { INIT, Store } from '@ngrx/store';
 import { TournamentApiService } from 'src/app/services/tournament-api.service';
@@ -22,9 +21,7 @@ export class TournamentEffects {
         private tournamentApiService: TournamentApiService,
         private tournamentStore: Store<TournamentState>,
         private router: Router,
-    ){ 
- 
-    }
+    ){ }
 
     getTournaments$ = createEffect(() => {
         return this.actions$.pipe(
@@ -86,13 +83,15 @@ export class TournamentEffects {
         return this.actions$.pipe(
             ofType(TournamentPageActions.CreateTournament, TournamentPageActions.UpdateTournament),
             switchMap((cuPayload) => {
-                this.router.navigate(['/tournament-list']);
+
                 if(cuPayload.type === TournamentPageActions.UpdateTournament.type){
+                    this.router.navigate(['/tournament-list',cuPayload.tournament.id]);
                     return this.tournamentApiService.updateTournament(cuPayload.tournament).pipe(
                         map(() => TournamentAPIActions.UpdateTournamentSuccess({tournament: {...cuPayload.tournament}})),
                         catchError(err => of(TournamentAPIActions.UpdateTournamentError({err: err})))
                     )
                 }else{
+                    this.router.navigate(['/tournament-list']);
                     return this.tournamentApiService.createTournament(cuPayload.tournament).pipe(
                         map((tournamentId) => TournamentAPIActions.CreateTournamentSuccess({tournament: { ...cuPayload.tournament, id:tournamentId }})),
                         catchError(err => of(TournamentAPIActions.CreateTournamentError({err: err})))
@@ -101,6 +100,7 @@ export class TournamentEffects {
             }),
         )
     })
+
 
 
 }
