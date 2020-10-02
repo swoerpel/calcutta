@@ -66,7 +66,7 @@ export const DeletePlayerError = createAction(
 
 export const UpdatePlayerBetValueSuccess = createAction(
     '[Players API Action] Update Player Bet Value Success',
-    props<{playerId:string, betValue: number}>()
+    props<{playerId:string,tournamentId: string; betValue: number}>()
 )
 
 export const UpdatePlayerBetValueError = createAction(

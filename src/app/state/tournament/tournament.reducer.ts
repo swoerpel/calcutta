@@ -5,6 +5,10 @@ import { TournamentPageActions, TournamentAPIActions } from "./actions";
 export interface TournamentState {
     tournamentList: Tournament[];
     tournamentId: string;
+
+    // HOLDS BETTING DATA
+    tempTournament: any;
+
     getTournamentsError: any;
     createTournamentError: any;
     updateTournamentError: any;
@@ -15,6 +19,9 @@ export interface TournamentState {
 const initialState: TournamentState = {
     tournamentList: null,
     tournamentId: null,
+
+    tempTournament: {},
+
     getTournamentsError: null,
     createTournamentError: null,
     updateTournamentError: null,

@@ -1,7 +1,9 @@
+import { PlayerTournamentData } from './player-tournament-data.model';
+
 export interface Player {
     firstName: string;
     lastName: string;
     id?: string;
-    betValue?: number;
+    tournaments: PlayerTournamentData[],
     fargoRating?: number;
 }

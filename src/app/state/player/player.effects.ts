@@ -102,11 +102,11 @@ export class PlayerEffects {
             ofType(PlayerPageActions.UpdatePlayerBetValue),
             withLatestFrom(this.tournamentStore.select(GetCurrentTournamentId)),
             switchMap(([payload,tournamentId]) => {
-                console.log("payload",payload)
                 return this.playerApiService.updatePlayerBetValue(payload.playerId, tournamentId, payload.betValue).pipe(
                     map(() => {
                         return PlayerAPIActions.UpdatePlayerBetValueSuccess({
                             playerId: payload.playerId,
+                            tournamentId: tournamentId,
                             betValue: payload.betValue
                         });
                     }),
@@ -128,6 +128,7 @@ export class PlayerEffects {
         )
     })
 
+    // UNFINISHED, Difficult list difference merge needed
     updateRegistration$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(TournamentPageActions.UpdateTournament),

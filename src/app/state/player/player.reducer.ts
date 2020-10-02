@@ -121,7 +121,13 @@ export const playerReducer = createReducer<PlayerState>(
                 if(player.id === action.playerId){
                     return {
                         ...player,
-                        betValue: action.betValue
+                        tournaments:{
+                            ...player.tournaments,
+                            [action.tournamentId]: {
+                                betValue: action.betValue
+                                // TOP BET PLAYER USER NAME GOES HERE
+                            }
+                        }
                     }
                 }
                 return player;

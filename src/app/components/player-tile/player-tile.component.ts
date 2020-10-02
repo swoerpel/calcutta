@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Player } from 'src/app/models/player.model';
 import { UpdatePlayerBetValue } from 'src/app/state/player/actions/player-page.actions';
@@ -13,7 +14,10 @@ import { PlayerState } from 'src/app/state/player/player.reducer';
 export class PlayerTileComponent implements OnInit {
 
     @Input() player:Player;
-    public topBidder: Player = {
+
+    public betValue = 0;
+
+    public topBidder = {
         firstName: 'Stetson',
         lastName: 'W',
     };
@@ -25,20 +29,23 @@ export class PlayerTileComponent implements OnInit {
     };
 
     public betInput: FormControl = new FormControl(0,[Validators.required])
+    public tournamentId: string = null;
 
     constructor(
         private playerStore: Store<PlayerState>,
+        private router: Router
     ) {}
 
     ngOnInit(){
-
+        this.tournamentId = this.router.routerState.snapshot.url.split('/')[2];
+        console.log('this.tournamentId',this.tournamentId)
     }
 
     onUpdateBetValue(){
         console.log('this.betInput.value',this.betInput.value)
         this.playerStore.dispatch(UpdatePlayerBetValue({
             playerId: this.player.id,
-            betValue: this.betInput.value
+            betValue: this.betInput.value,
         }));
     }
 }
