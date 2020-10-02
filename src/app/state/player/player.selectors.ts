@@ -17,6 +17,12 @@ export const GetCreatePlayerError = createSelector(
     }
 )
 
+export const GetCreatePlayerSuccess = createSelector(
+    getPlayerFeatureState,
+    (state: PlayerState) => {
+        return state.createPlayerError;
+    }
+)
 
 export const GetPlayerSet = createSelector(
     getPlayerFeatureState,

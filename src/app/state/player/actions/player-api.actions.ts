@@ -34,6 +34,15 @@ export const RegisterPlayersError = createAction(
     props<{err: any}>()
 )
 
+export const UpdateRegistrationSuccess = createAction(
+    '[Players API Action] Update Registration Success',
+)
+
+export const UpdateRegistrationError = createAction(
+    '[Players API Action] Update Registration Error',
+    props<{err: any}>()
+)
+
 export const UpdatePlayerSuccess = createAction(
     '[Players API Action] Update Player Success',
     props<{player: Player}>()

@@ -11,7 +11,9 @@ import { GetAllPlayers } from './player.selectors';
 import { playerExists } from '../../shared/helpers';
 import { PlayerApiService } from 'src/app/services/player-api.service';
 import { Player } from 'src/app/models/player.model';
-import { TournamentAPIActions } from '../tournament/actions';
+import { TournamentAPIActions, TournamentPageActions } from '../tournament/actions';
+import { TournamentState } from '../tournament/tournament.reducer';
+import { GetCurrentTournament, GetCurrentTournamentId } from '../tournament/tournament.selectors';
 
 @Injectable({
     providedIn: 'root'
@@ -22,6 +24,7 @@ export class PlayerEffects {
     constructor( 
         private actions$: Actions,
         private playerStore: Store<PlayerState>,
+        private tournamentStore: Store<TournamentState>,
         private playerApiService: PlayerApiService,
     ){ 
  
@@ -87,7 +90,7 @@ export class PlayerEffects {
             ofType(PlayerPageActions.DeletePlayer),
             switchMap((payload) => {
                 return this.playerApiService.deletePlayer(payload.player.id).pipe(
-                    map((res) => PlayerAPIActions.DeletePlayerSuccess({playerId: payload.player.id})),
+                    map(() => PlayerAPIActions.DeletePlayerSuccess({playerId: payload.player.id})),
                     catchError(err => of(PlayerAPIActions.DeletePlayerError({err: err})))
                 )
             }),
@@ -97,8 +100,10 @@ export class PlayerEffects {
     updatePlayerBetValue$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(PlayerPageActions.UpdatePlayerBetValue),
-            switchMap((payload) => {
-                return this.playerApiService.updatePlayerBetValue(payload.playerId, '', payload.betValue).pipe(
+            withLatestFrom(this.tournamentStore.select(GetCurrentTournamentId)),
+            switchMap(([payload,tournamentId]) => {
+                console.log("payload",payload)
+                return this.playerApiService.updatePlayerBetValue(payload.playerId, tournamentId, payload.betValue).pipe(
                     map(() => {
                         return PlayerAPIActions.UpdatePlayerBetValueSuccess({
                             playerId: payload.playerId,
@@ -111,13 +116,40 @@ export class PlayerEffects {
         )
     })
 
-    createPlayerTournamentCollection$ = createEffect(() => {
+    registerPlayer$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(TournamentAPIActions.CreateTournamentSuccess),
             switchMap((payload) => {
                 return this.playerApiService.registerPlayers(payload.tournament).pipe(
                     map(() => PlayerAPIActions.RegisterPlayersSuccess()),
                     catchError(err => of(PlayerAPIActions.RegisterPlayersError({err: err})))
+                )
+            }),
+        )
+    })
+
+    updateRegistration$ = createEffect(() => {
+        return this.actions$.pipe(
+            ofType(TournamentPageActions.UpdateTournament),
+            withLatestFrom(this.tournamentStore.select(GetCurrentTournament)),
+            switchMap(([payload, tournament]) => {
+                console.log('payload',payload.tournament.players)
+                console.log('tournament',tournament)
+                const diffArray = (arr1, arr2) => arr1
+                    .concat(arr2)
+                    .filter(val => !(
+                        arr1.includes(val) && 
+                        arr2.includes(val)
+                    ));
+                // new players
+                // payload.tournament.players
+                const addedToTournament = [];
+                const removedFromTournament = [];
+                const changes = diffArray(payload.tournament.players, tournament.players)
+                console.log('changes',changes)
+                return this.playerApiService.updateRegistration(payload.tournament).pipe(
+                    map(() => PlayerAPIActions.UpdateRegistrationSuccess()),
+                    catchError(err => of(PlayerAPIActions.UpdateRegistrationError({err: err})))
                 )
             }),
         )

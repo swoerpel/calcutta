@@ -16,3 +16,10 @@ export const GetCurrentTournament = createSelector(
         return state.tournamentList?.find(t => t.id === state.tournamentId);
     }
 )
+
+export const GetCurrentTournamentId = createSelector(
+    getTournamentFeatureState,
+    (state: TournamentState) => {
+        return state.tournamentId;
+    }
+)

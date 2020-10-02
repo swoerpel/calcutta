@@ -5,7 +5,7 @@ import { Player } from 'src/app/models/player.model';
 import { Tournament } from 'src/app/models/tournament.model';
 import { PlayerState } from 'src/app/state/player/player.reducer';
 import { Store } from '@ngrx/store';
-import { GetCreatePlayerError, GetAllPlayers } from 'src/app/state/player/player.selectors';
+import { GetCreatePlayerError, GetAllPlayers, GetCreatePlayerSuccess } from 'src/app/state/player/player.selectors';
 import { filter } from 'rxjs/internal/operators/filter';
 import { tap } from 'rxjs/operators';
 import { PlayerPageActions } from 'src/app/state/player/actions';
@@ -29,7 +29,6 @@ export class ManagePlayerListComponent implements OnInit {
         firstName:'stetson',
         lastName: 'carlson',
         fargoRating: 555,
-        currentBetPrice: 0,
     }
 
     public players$: Observable<Player[]>;
@@ -71,8 +70,6 @@ export class ManagePlayerListComponent implements OnInit {
             filter(e => !!e),
             tap(err => this.displaySnackbar(err))
         )
-
-        this.snackbarError.subscribe();
     }
 
     public onSelectPlayer(player: Player){
@@ -84,7 +81,6 @@ export class ManagePlayerListComponent implements OnInit {
         this.playerStore.dispatch(PlayerPageActions.CreatePlayer({
             player: {
                 ...this.playerFormGroup.value,
-                currentBetPrice: 0,
             }
         }))
         // COMMENTED OUT FOR TESTING EASE
@@ -97,6 +93,7 @@ export class ManagePlayerListComponent implements OnInit {
             ...this.playerFormGroup.value
         }}));
         this.playerFormGroup.reset();
+        
     }
 
     public deletePlayer() {

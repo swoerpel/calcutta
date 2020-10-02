@@ -125,12 +125,8 @@ export class CreateTournamentComponent implements OnInit, OnDestroy {
     }
 
     public createPlayer(){
-        const player = {
-            ...this.playerFormGroup.value,
-            currentBetPrice: 0,
-        }
         this.playerStore.dispatch(PlayerPageActions.CreatePlayer({
-            player: player
+            player: this.playerFormGroup.value
         }))
         this.playerFormGroup.reset();
     }

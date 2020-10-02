@@ -35,7 +35,7 @@ export class PlayerTileComponent implements OnInit {
     }
 
     onUpdateBetValue(){
-
+        console.log('this.betInput.value',this.betInput.value)
         this.playerStore.dispatch(UpdatePlayerBetValue({
             playerId: this.player.id,
             betValue: this.betInput.value
