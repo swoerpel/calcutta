@@ -10,13 +10,23 @@ export const GetTournaments = createSelector(
     }
 )
 
+// deprecated
+// export const GetCurrentTournament = createSelector(
+//     getTournamentFeatureState,
+//     (state: TournamentState) => {
+//         return state.tournamentList?.find(t => t.id === state.tournamentId);
+//     }
+// )
+
 export const GetCurrentTournament = createSelector(
     getTournamentFeatureState,
-    (state: TournamentState) => {
-        return state.tournamentList?.find(t => t.id === state.tournamentId);
+    (state: TournamentState, props) => {
+        return state.currentTournament;
+        // return state.tournamentList?.find(t => t.id === props.tournamentId);
     }
 )
 
+// potential deprecation
 export const GetCurrentTournamentId = createSelector(
     getTournamentFeatureState,
     (state: TournamentState) => {

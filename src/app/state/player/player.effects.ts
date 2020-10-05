@@ -129,32 +129,32 @@ export class PlayerEffects {
     })
 
     // UNFINISHED, Difficult list difference merge needed
-    updateRegistration$ = createEffect(() => {
-        return this.actions$.pipe(
-            ofType(TournamentPageActions.UpdateTournament),
-            withLatestFrom(this.tournamentStore.select(GetCurrentTournament)),
-            switchMap(([payload, tournament]) => {
-                console.log('payload',payload.tournament.players)
-                console.log('tournament',tournament)
-                const diffArray = (arr1, arr2) => arr1
-                    .concat(arr2)
-                    .filter(val => !(
-                        arr1.includes(val) && 
-                        arr2.includes(val)
-                    ));
-                // new players
-                // payload.tournament.players
-                const addedToTournament = [];
-                const removedFromTournament = [];
-                const changes = diffArray(payload.tournament.players, tournament.players)
-                console.log('changes',changes)
-                return this.playerApiService.updateRegistration(payload.tournament).pipe(
-                    map(() => PlayerAPIActions.UpdateRegistrationSuccess()),
-                    catchError(err => of(PlayerAPIActions.UpdateRegistrationError({err: err})))
-                )
-            }),
-        )
-    })
+    // updateRegistration$ = createEffect(() => {
+    //     return this.actions$.pipe(
+    //         ofType(TournamentPageActions.UpdateTournament),
+    //         withLatestFrom(this.tournamentStore.select(GetCurrentTournament)),
+    //         switchMap(([payload, tournament]) => {
+    //             // console.log('payload',payload.tournament.players)
+    //             console.log('tournament',tournament)
+    //             const diffArray = (arr1, arr2) => arr1
+    //                 .concat(arr2)
+    //                 .filter(val => !(
+    //                     arr1.includes(val) && 
+    //                     arr2.includes(val)
+    //                 ));
+    //             // new players
+    //             payload.tournament.players
+    //             const addedToTournament = [];
+    //             const removedFromTournament = [];
+    //             const changes = diffArray(payload.tournament.players, tournament.players)
+    //             // console.log('changes',changes)
+    //             return this.playerApiService.updateRegistration(payload.tournament).pipe(
+    //                 map(() => PlayerAPIActions.UpdateRegistrationSuccess()),
+    //                 catchError(err => of(PlayerAPIActions.UpdateRegistrationError({err: err})))
+    //             )
+    //         }),
+    //     )
+    // })
 
 
    

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
-import { from, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { from, Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { Player } from '../models/player.model';
 import { Tournament } from '../models/tournament.model';
 
@@ -44,6 +44,22 @@ export class TournamentApiService {
                 return tournamentList
             }),
         );
+    }
+
+    getTournamentById(tournamentId): Observable<Tournament>{
+        let dbTournament = this.db.collection<any>('tournaments').doc(tournamentId)
+        return from(dbTournament.get().pipe(
+            switchMap((t) => {
+                return from(dbTournament.collection('active_players').get()).pipe(
+                    map((active_players) => {
+                        return {
+                            ...t.data(),
+                            activePlayers: active_players.docs.map((p => p.data())),
+                        } as Tournament
+                    })
+                )
+            })
+        ))
     }
 
 }

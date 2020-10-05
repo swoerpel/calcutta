@@ -2,9 +2,11 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import { Player } from 'src/app/models/player.model';
 import { UpdatePlayerBetValue } from 'src/app/state/player/actions/player-page.actions';
 import { PlayerState } from 'src/app/state/player/player.reducer';
+import { GetPlayerBetValue } from 'src/app/state/player/player.selectors';
 
 @Component({
     selector: 'player-tile',
@@ -30,6 +32,7 @@ export class PlayerTileComponent implements OnInit {
 
     public betInput: FormControl = new FormControl(0,[Validators.required])
     public tournamentId: string = null;
+    public playerBetValue: Observable<number>;
 
     constructor(
         private playerStore: Store<PlayerState>,
@@ -39,12 +42,17 @@ export class PlayerTileComponent implements OnInit {
     ngOnInit(){
         this.tournamentId = this.router.routerState.snapshot.url.split('/')[2];
         console.log('this.tournamentId',this.tournamentId)
+        this.playerStore.select(GetPlayerBetValue, {
+            playerId: this.player.id,
+            tournamentId: this.tournamentId
+        }).subscribe();
     }
 
     onUpdateBetValue(){
         console.log('this.betInput.value',this.betInput.value)
         this.playerStore.dispatch(UpdatePlayerBetValue({
             playerId: this.player.id,
+            tournamentId: this.tournamentId,
             betValue: this.betInput.value,
         }));
     }

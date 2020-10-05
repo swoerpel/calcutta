@@ -17,6 +17,20 @@ export const GetTournamentsError = createAction(
     props<{err: any}>()
 )
 
+export const GetTournamentById = createAction(
+    '[Tournament API] Get Tournament By Id',
+)
+
+export const GetTournamentByIdSuccess = createAction(
+    '[Tournament API] Get Tournament By Id Success',
+    props<{tournament: Tournament}>()
+)
+
+export const GetTournamentByIdError = createAction(
+    '[Tournament API] Get Tournament By Id Error',
+    props<{err: any}>()
+)
+
 
 export const CreateTournamentSuccess = createAction(
     '[Tournament API] Create Tournament Success',

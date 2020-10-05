@@ -40,6 +40,24 @@ export class TournamentEffects {
         )   
     });
 
+    getTournamentById$ = createEffect((): any => {
+        return this.actions$.pipe(
+            ofType(ROUTER_NAVIGATED,INIT),
+            map((action: any) => {
+                let url = action?.payload.event.url.split('/');
+                url.shift();
+                return {baseUrl: url[0], tournamentId: url[1]};
+            }),
+            filter((routeObj: any) => routeObj.baseUrl === 'tournament-list' && !!routeObj.tournamentId),
+            switchMap((routeObj: any) => {
+                return this.tournamentApiService.getTournamentById(routeObj.tournamentId).pipe(
+                    map((tournament: Tournament) => TournamentAPIActions.GetTournamentByIdSuccess({tournament: tournament})),
+                    catchError((err) => of(TournamentAPIActions.GetTournamentByIdError({err: err})))
+                )
+            }),
+        );   
+    });
+
     deleteTournament$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(TournamentPageActions.DeleteTournament),

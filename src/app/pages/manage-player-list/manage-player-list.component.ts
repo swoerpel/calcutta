@@ -36,6 +36,7 @@ export class ManagePlayerListComponent implements OnInit {
     public selectedPlayer: Player = {
         firstName: null,
         lastName: null,
+        tournaments: null,
     };
 
     public playerFormGroup = new FormGroup({

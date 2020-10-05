@@ -42,24 +42,20 @@ export class PlayerApiService {
 
     getPlayers(): Observable<Player[]>{
 
+        // from(this.db.collection<any>('players').get()).pipe(map((querySnapshot) => {
+        //     console.log('players querySnapshot',querySnapshot)
+        //     // querySnapshot.docs
+        //     // if(){
 
-
-
-
-        from(this.db.collection<any>('players').get()).pipe(map((querySnapshot) => {
-            console.log('players querySnapshot',querySnapshot)
-            // querySnapshot.docs
-            // if(){
-
-            // }
-            querySnapshot.forEach((doc) => {
-                // if(doc.id)
-                console.log('doc',doc.data())
-            //     doc.ref.update({
-            //         capital: true
-            //     });
-            });
-        })).subscribe();
+        //     // }
+        //     querySnapshot.forEach((doc) => {
+        //         // if(doc.id)
+        //         console.log('doc',doc.data())
+        //     //     doc.ref.update({
+        //     //         capital: true
+        //     //     });
+        //     });
+        // })).subscribe();
 
         return from(this.db
             .collection<any>('players')
@@ -80,20 +76,21 @@ export class PlayerApiService {
     // Creates the tournament instance within each players database,
     // this is where bet value and max better data is held per player per tournament
     registerPlayers(tournament: Tournament): Observable<void>{
-        tournament.players.forEach((p: string) => {
-            this.db
-            .collection<any>('players')
-            .doc(p)
-            .collection<any>('tournaments')
-            .doc(tournament.id)
-            .set({
-                betValue: -1,
-                highestBetUserId: null,
-            } as PlayerTournamentData)
-        })
-        console.log('registering players at tournament',tournament)
-        // return from(
-        // );
+        // console.log('registerPlayer',tournament)
+        // tournament.players.forEach((p: ActivePlayer) => {
+        //     this.db
+        //     .collection<any>('players')
+        //     .doc(p.playerId)
+        //     .collection<any>('tournaments')
+        //     .doc(tournament.id)
+        //     .set({
+        //         betValue: -1,
+        //         highestBetUserId: null,
+        //     } as PlayerTournamentData)
+        // })
+        // console.log('registering players at tournament',tournament)
+        // // return from(
+        // // );
         return of()
     }
 

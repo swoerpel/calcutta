@@ -1,4 +1,5 @@
 import { Player } from "./player.model";
+import { ActivePlayer } from "./active-player.model";
 
 export interface Tournament {
     id?: string;
@@ -6,5 +7,5 @@ export interface Tournament {
     roomName: string;
     endTime: string;
     duration?: string;
-    players: string[];
+    activePlayers: ActivePlayer[];
 }

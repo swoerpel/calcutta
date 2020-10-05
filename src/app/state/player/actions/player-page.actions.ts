@@ -38,5 +38,5 @@ export const ResetTempPlayerList = createAction(
 
 export const UpdatePlayerBetValue = createAction(
     '[Player Page Action] Update Player Bet Value',
-    props<{playerId: string; betValue: number;}>()
+    props<{playerId: string; tournamentId: string; betValue: number;}>()
 );

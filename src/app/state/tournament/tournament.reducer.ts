@@ -7,9 +7,10 @@ export interface TournamentState {
     tournamentId: string;
 
     // HOLDS BETTING DATA
-    tempTournament: any;
+    currentTournament: any;
 
     getTournamentsError: any;
+    getTournamentByIdError: any;
     createTournamentError: any;
     updateTournamentError: any;
     deleteTournamentError: any;
@@ -20,9 +21,10 @@ const initialState: TournamentState = {
     tournamentList: null,
     tournamentId: null,
 
-    tempTournament: {},
+    currentTournament: null,
 
     getTournamentsError: null,
+    getTournamentByIdError: null,
     createTournamentError: null,
     updateTournamentError: null,
     deleteTournamentError: null,
@@ -49,6 +51,26 @@ export const tournamentReducer = createReducer<TournamentState>(
         return {
             ...state,
             getTournamentsError: action.err,
+        }
+    }),
+    // ===============================================================================
+    on(TournamentAPIActions.GetTournamentById, (state): TournamentState => {
+        return {
+            ...state,
+            getTournamentByIdError: null,
+        }
+    }),
+    on(TournamentAPIActions.GetTournamentByIdSuccess, (state,action): TournamentState => {
+        return {
+            ...state,
+            currentTournament: action.tournament,
+            getTournamentByIdError: null,
+        }
+    }),
+    on(TournamentAPIActions.GetTournamentByIdError, (state,action): TournamentState => {
+        return {
+            ...state,
+            getTournamentByIdError: action.err,
         }
     }),
 // ===============================================================================

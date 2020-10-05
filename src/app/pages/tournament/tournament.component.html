@@ -6,7 +6,5 @@
         <mat-label>Search Players</mat-label>
         <input matInput [(ngModel)]="playerInput" placeholder="player name" class="search-input"/>
     </mat-form-field>
-    <ng-container *ngIf="(players$ | async) as players">
-        <player-tile *ngFor="let player of players | filterPlayers:playerInput"  [player]="player"></player-tile>
-    </ng-container>
+    <player-tile *ngFor="let player of tournament.activePlayers | filterPlayers:playerInput"  [player]="player"></player-tile>
 </div>

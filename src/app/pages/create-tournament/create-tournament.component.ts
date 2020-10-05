@@ -14,7 +14,7 @@ import { GetAllPlayers, GetPlayerSet, GetTempPlayerList } from 'src/app/state/pl
 import { PlayerPageActions } from 'src/app/state/player/actions';
 import { GetCurrentTournament } from 'src/app/state/tournament/tournament.selectors';
 import { AddTempPlayer, RemoveTempPlayer, ResetTempPlayerList, SetTempPlayerList } from 'src/app/state/player/actions/player-page.actions';
-
+import * as _ from 'lodash';
 
 @Component({
     selector: 'create-tournament',
@@ -63,16 +63,17 @@ export class CreateTournamentComponent implements OnInit, OnDestroy {
     ngOnInit(){
         this.tournament_id = this.router.routerState.snapshot.url.split('/')[2];
 
-        this.tournamentStore.select(GetCurrentTournament).pipe(
-            tap((tournament: Tournament) => {
-                if(tournament?.players !== undefined){
-                    this.tournamentFormGroup.patchValue({...tournament})
-                    this.playerStore.dispatch(SetTempPlayerList({playerIds: tournament.players}));
-                }else
-                    this.playerStore.dispatch(SetTempPlayerList({playerIds: []}));
-            }),
-            takeUntil(this.unsubscribe),
-        ).subscribe();
+        // this.tournamentStore.select(GetCurrentTournament).pipe(
+        //     tap((tournament: Tournament) => {
+        //         if(tournament?.players !== undefined){
+        //             this.tournamentFormGroup.patchValue({...tournament})
+        //             console.log('easer', _.pick(tournament.players, 'playerId'))
+        //             this.playerStore.dispatch(SetTempPlayerList({playerIds: tournament.players.map(p => p.playerId)}));
+        //         }else
+        //             this.playerStore.dispatch(SetTempPlayerList({playerIds: []}));
+        //     }),
+        //     takeUntil(this.unsubscribe),
+        // ).subscribe();
 
         this.currentPlayers$ = this.playerStore.select(GetTempPlayerList);
 
