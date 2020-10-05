@@ -4,8 +4,10 @@
         <div class="col col__player col__subtitle">Fargo Rating: {{player.fargoRating}}</div>
     </div>
     <div class="col col__betting">
-        <div class="col col__betting col__title">${{playerBetValue}}</div>
-        <div class="col col__betting col__subtitle">{{topBidder.firstName}} {{topBidder.lastName}}</div>
+        <div class="col col__betting col__title">${{player.betValue}}</div>
+        <ng-container *ngIf="(maxBetValueUserFullName | async) as fullName">
+            <div class="col col__betting col__subtitle">{{fullName}}</div>
+        </ng-container>
     </div>
     <div class="col col__betting">
 

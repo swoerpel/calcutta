@@ -3,10 +3,13 @@ import { FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { ActivePlayer } from 'src/app/models/active-player.model';
 import { Player } from 'src/app/models/player.model';
 import { UpdatePlayerBetValue } from 'src/app/state/player/actions/player-page.actions';
 import { PlayerState } from 'src/app/state/player/player.reducer';
 import { GetPlayerBetValue } from 'src/app/state/player/player.selectors';
+import { UserState } from 'src/app/state/user/user.reducer';
+import { GetUserFullName } from 'src/app/state/user/user.selectors';
 
 @Component({
     selector: 'player-tile',
@@ -15,7 +18,7 @@ import { GetPlayerBetValue } from 'src/app/state/player/player.selectors';
 })
 export class PlayerTileComponent implements OnInit {
 
-    @Input() player:Player;
+    @Input() player:ActivePlayer;
 
     public betValue = 0;
 
@@ -32,20 +35,23 @@ export class PlayerTileComponent implements OnInit {
 
     public betInput: FormControl = new FormControl(0,[Validators.required])
     public tournamentId: string = null;
-    public playerBetValue: Observable<number>;
+    public maxBetValueUserFullName: Observable<string>;
 
     constructor(
         private playerStore: Store<PlayerState>,
+        private userStore: Store<UserState>,
         private router: Router
     ) {}
 
     ngOnInit(){
-        this.tournamentId = this.router.routerState.snapshot.url.split('/')[2];
-        console.log('this.tournamentId',this.tournamentId)
-        this.playerStore.select(GetPlayerBetValue, {
-            playerId: this.player.id,
-            tournamentId: this.tournamentId
-        }).subscribe();
+        // this.tournamentId = this.router.routerState.snapshot.url.split('/')[2];
+        console.log('this.player',this.player)
+        this.maxBetValueUserFullName = this.userStore.select(GetUserFullName,{userId: this.player.maxBetUserId})
+        this.maxBetValueUserFullName.subscribe( p => console.log('max bet full name',p))
+        // this.playerStore.select(GetPlayerBetValue, {
+        //     playerId: this.player.id,
+        //     tournamentId: this.tournamentId
+        // }).subscribe();
     }
 
     onUpdateBetValue(){

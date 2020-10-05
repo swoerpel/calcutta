@@ -1,7 +1,7 @@
 export interface User {
-    uid: string;
-    displayName: string;
+    id: string;
+    firstName: string;
+    lastName: string;
     email: string;
-    firstName?: string;
-    lastName?: string;
+    maxBetValue?: number;
 }

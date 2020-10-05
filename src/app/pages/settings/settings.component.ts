@@ -22,6 +22,7 @@ export class SettingsPageComponent implements OnInit {
         this.currentUser$ = this.userStore.select(GetCurrentUser).pipe(
             filter(p => !!p),
         )
+        this.currentUser$.subscribe(u => console.log('u',u))
     }
 
     resetPassword(){

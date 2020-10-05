@@ -21,12 +21,16 @@ export const getAdminStatus = createSelector(
 export const GetCurrentUser = createSelector(
     getUserFeatureState,
     (state: UserState) => {
-        const name = state?.currentUser.displayName.split('_');
-        return {
-            ...state?.currentUser,
-            firstName: name[0],
-            lastName: name[1],
-        }
+        state.currentUser
+        return state?.allUsers?.find((u) => u.id === state.currentUser.id)
+    }
+)
+
+export const GetUserFullName = createSelector(
+    getUserFeatureState,
+    (state: UserState, props) => {
+        // const name = state?.currentUser.displayName.split('_');
+        return state?.allUsers?.find((u) => u.id === props.userId)
     }
 )
 
