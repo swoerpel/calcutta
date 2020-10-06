@@ -30,7 +30,7 @@ export class CreateTournamentComponent implements OnInit, OnDestroy {
 
     public tournamentFormGroup = new FormGroup({
         name: new FormControl('', [Validators.required,]),
-        roomName: new FormControl('', [Validators.required,]),
+        location: new FormControl('', [Validators.required,]),
         endTime: new FormControl('', [Validators.required,]),
         duration: new FormControl('', [Validators.required,]),
         // id: new FormControl('new-tournament', [Validators.required,]),
@@ -63,17 +63,16 @@ export class CreateTournamentComponent implements OnInit, OnDestroy {
     ngOnInit(){
         this.tournament_id = this.router.routerState.snapshot.url.split('/')[2];
 
-        // this.tournamentStore.select(GetCurrentTournament).pipe(
-        //     tap((tournament: Tournament) => {
-        //         if(tournament?.players !== undefined){
-        //             this.tournamentFormGroup.patchValue({...tournament})
-        //             console.log('easer', _.pick(tournament.players, 'playerId'))
-        //             this.playerStore.dispatch(SetTempPlayerList({playerIds: tournament.players.map(p => p.playerId)}));
-        //         }else
-        //             this.playerStore.dispatch(SetTempPlayerList({playerIds: []}));
-        //     }),
-        //     takeUntil(this.unsubscribe),
-        // ).subscribe();
+        this.tournamentStore.select(GetCurrentTournament).pipe(
+            tap((tournament: Tournament) => {
+                if(tournament?.activePlayers !== undefined){
+                    this.tournamentFormGroup.patchValue({...tournament})
+                    this.playerStore.dispatch(SetTempPlayerList({playerIds: tournament.activePlayers.map(p => p.id)}));
+                }else
+                    this.playerStore.dispatch(SetTempPlayerList({playerIds: []}));
+            }),
+            takeUntil(this.unsubscribe),
+        ).subscribe();
 
         this.currentPlayers$ = this.playerStore.select(GetTempPlayerList);
 

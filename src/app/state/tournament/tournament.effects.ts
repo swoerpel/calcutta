@@ -9,6 +9,8 @@ import { TournamentState } from './tournament.reducer';
 import { INIT, Store } from '@ngrx/store';
 import { TournamentApiService } from 'src/app/services/tournament-api.service';
 import { Tournament } from 'src/app/models/tournament.model';
+import { PlayerState } from '../player/player.reducer';
+import { GetTempPlayerList } from '../player/player.selectors';
 
 @Injectable({
     providedIn: 'root'
@@ -20,6 +22,7 @@ export class TournamentEffects {
         private actions$: Actions,
         private tournamentApiService: TournamentApiService,
         private tournamentStore: Store<TournamentState>,
+        private playerStore: Store<PlayerState>,
         private router: Router,
     ){ }
 
@@ -100,8 +103,8 @@ export class TournamentEffects {
     createAndUpdateTournament$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(TournamentPageActions.CreateTournament, TournamentPageActions.UpdateTournament),
-            switchMap((cuPayload) => {
-
+            withLatestFrom(this.playerStore.select(GetTempPlayerList)),
+            switchMap(([cuPayload, tempPlayerList]) => {
                 if(cuPayload.type === TournamentPageActions.UpdateTournament.type){
                     this.router.navigate(['/tournament-list',cuPayload.tournament.id]);
                     return this.tournamentApiService.updateTournament(cuPayload.tournament).pipe(
@@ -110,7 +113,7 @@ export class TournamentEffects {
                     )
                 }else{
                     this.router.navigate(['/tournament-list']);
-                    return this.tournamentApiService.createTournament(cuPayload.tournament).pipe(
+                    return this.tournamentApiService.createTournament(cuPayload.tournament,tempPlayerList).pipe(
                         map((tournamentId) => TournamentAPIActions.CreateTournamentSuccess({tournament: { ...cuPayload.tournament, id:tournamentId }})),
                         catchError(err => of(TournamentAPIActions.CreateTournamentError({err: err})))
                     )

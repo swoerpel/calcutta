@@ -20,6 +20,6 @@ export class FilterTournaments implements PipeTransform {
     if(!tournamentList || !inputString){
       return tournamentList;
     }
-    return tournamentList.filter(p => (p.name + p.roomName).toLowerCase().indexOf(inputString) !== -1);
+    return tournamentList.filter(p => (p.name + p.location).toLowerCase().indexOf(inputString) !== -1);
   }
 }

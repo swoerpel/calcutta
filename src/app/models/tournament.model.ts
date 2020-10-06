@@ -4,8 +4,9 @@ import { ActivePlayer } from "./active-player.model";
 export interface Tournament {
     id?: string;
     name: string;
-    roomName: string;
+    location: string;
     endTime: string;
     duration?: string;
-    activePlayers: ActivePlayer[];
+    activePlayers?: ActivePlayer[];
+    players?: Player[];
 }

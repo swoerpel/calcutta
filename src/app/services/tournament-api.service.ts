@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
+import { find } from 'lodash';
 import { from, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { ActivePlayer } from '../models/active-player.model';
 import { Player } from '../models/player.model';
 import { Tournament } from '../models/tournament.model';
 
@@ -16,10 +18,39 @@ export class TournamentApiService {
 
     }
 
-    createTournament(tournament: Tournament): Observable<string>{
-        return from(this.db.collection<any>('tournaments').add(tournament)).pipe(
-            map(res => res.id)
-        );
+    createTournament(tournament: Tournament, playerList: Player[]): Observable<any>{
+        return from(this.db.collection<any>('tournaments').add({
+            name: tournament.name,
+            location: tournament.location,
+            endTime: tournament.endTime,
+            duration: tournament?.duration
+        })).pipe(
+            switchMap((res) => {
+                return from(this.db.collection<any>('players').get()).pipe(
+                    map((res) => res.docs.filter((p) => playerList.find((player: Player) => player.id === p?.id))
+                        .map((p): any => {
+                            let playerData = p.data();
+                            delete playerData.activeTournaments
+                            return {
+                                ...playerData,
+                                id: p.id,
+                                betValue: 0,
+                                maxBetUserId: '',
+                            }
+                        })
+                    ),
+                    map((filteredPlayers) => {
+                        let tournamentRef = this.db.collection<any>('tournaments').doc(res.id)
+                        return filteredPlayers.map((fp: any) => {
+                            const playerId = fp.id;
+                            delete fp.id;
+                            tournamentRef.collection('active_players').doc(playerId).set({...fp});
+                            return fp
+                        })
+                    })
+                )
+            }),
+        )
     }
 
     updateTournament(tournament: Tournament): Observable<void>{
