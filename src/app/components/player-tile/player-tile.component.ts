@@ -3,6 +3,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { filter, tap } from 'rxjs/operators';
 import { ActivePlayer } from 'src/app/models/active-player.model';
 import { Player } from 'src/app/models/player.model';
 import { UpdatePlayerBetValue } from 'src/app/state/player/actions/player-page.actions';
@@ -35,7 +36,7 @@ export class PlayerTileComponent implements OnInit {
 
     public betInput: FormControl = new FormControl(0,[Validators.required])
     public tournamentId: string = null;
-    public maxBetValueUserFullName: Observable<string>;
+    public maxBetValueUserFullName: Observable<any>;
 
     constructor(
         private playerStore: Store<PlayerState>,
@@ -44,23 +45,18 @@ export class PlayerTileComponent implements OnInit {
     ) {}
 
     ngOnInit(){
-        // this.tournamentId = this.router.routerState.snapshot.url.split('/')[2];
-        console.log('this.player',this.player)
-        this.maxBetValueUserFullName = this.userStore.select(GetUserFullName,{userId: this.player.maxBetUserId})
-        this.maxBetValueUserFullName.subscribe( p => console.log('max bet full name',p))
-        // this.playerStore.select(GetPlayerBetValue, {
-        //     playerId: this.player.id,
-        //     tournamentId: this.tournamentId
-        // }).subscribe();
+        this.maxBetValueUserFullName = this.userStore.select(GetUserFullName,{userId: this.player.maxBetUserId}).pipe(
+            filter(p => !!p),
+        )
     }
 
     onUpdateBetValue(){
-        console.log('this.betInput.value',this.betInput.value)
-        this.playerStore.dispatch(UpdatePlayerBetValue({
-            playerId: this.player.id,
-            tournamentId: this.tournamentId,
-            betValue: this.betInput.value,
-        }));
+        // console.log('this.betInput.value',this.betInput.value)
+        // this.playerStore.dispatch(UpdatePlayerBetValue({
+        //     playerId: this.player.id,
+        //     tournamentId: this.tournamentId,
+        //     betValue: this.betInput.value,
+        // }));
     }
 }
 

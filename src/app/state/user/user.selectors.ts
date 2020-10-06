@@ -28,9 +28,18 @@ export const GetCurrentUser = createSelector(
 
 export const GetUserFullName = createSelector(
     getUserFeatureState,
-    (state: UserState, props) => {
-        // const name = state?.currentUser.displayName.split('_');
-        return state?.allUsers?.find((u) => u.id === props.userId)
+    (state: UserState, props: any) => {
+        if(props.userId === ''){
+            return {
+                firstName: 'No Max',
+                lastName: 'Bet'
+            }
+        }
+        const user = state?.allUsers?.find((u) => u?.id === props.userId);
+        return {
+            firstName: user.firstName,
+            lastName: user.lastName,
+        } 
     }
 )
 

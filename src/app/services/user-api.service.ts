@@ -4,8 +4,6 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
 import { from, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { Player } from '../models/player.model';
-import { Tournament } from '../models/tournament.model';
 import { User } from '../models/user.model';
 
 @Injectable({
@@ -41,15 +39,15 @@ export class UserApiService {
 
     register(firstName, lastName, email, password): Observable<User>{
         return from(this.firebaseAuth.createUserWithEmailAndPassword(email, password)).pipe(
-            switchMap(()=> {
-                return from(this.db.collection<any>('users').add({
+            switchMap((authResponse)=> {
+                return from(this.db.collection<any>('users').doc(authResponse.user.uid).set({
                     firstName: firstName,
                     lastName: lastName,
                     email: email,
                     maxBetValue: 0,
-                })).pipe(map((user) => {
+                })).pipe(map(() => {
                     return {
-                        id: user.id,
+                        id: authResponse.user.uid,
                         firstName: firstName,
                         lastName: lastName,
                         email: email,

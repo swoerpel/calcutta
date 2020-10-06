@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { map, switchMap, tap, catchError } from 'rxjs/operators';
+import { map, switchMap, tap, catchError, take } from 'rxjs/operators';
 import { UserAPIActions, UserPageActions } from './actions';
 import { of, Observable } from 'rxjs';
 import { Router } from '@angular/router';
@@ -25,10 +25,12 @@ export class  UserEffects {
         return this.actions$.pipe(
             ofType(UserPageActions.LoginUser),
             switchMap((action) => this.userApiService.login(action.email, action.password).pipe(
-                switchMap((res: User) => [
-                    UserAPIActions.LoginUserSuccess({currentUser: {...res}}),
-                    TournamentAPIActions.GetTournaments()
-                ]),
+                switchMap((res: User) => {
+                    return[
+                        UserAPIActions.LoginUserSuccess({currentUser: {...res}}),
+                        TournamentAPIActions.GetTournaments()
+                    ]
+                }),
                 catchError((res) => of(UserAPIActions.LoadUsersError({err: res})))
             )),
             tap(() => this.router.navigate(['/tournament-list'])),
@@ -72,7 +74,6 @@ export class  UserEffects {
                 // ROUTER_NAVIGATED,
             ),
             switchMap((action) => {
-                console.log("action",action)
                 return this.userApiService.assignUserPrivileges(action.currentUser.id).pipe(
                     map((isAdmin) => UserAPIActions.AssignUserPrivileges({isAdmin: isAdmin})),
                 )
@@ -98,6 +99,7 @@ export class  UserEffects {
                     catchError((err) => of(UserAPIActions.LoadUsersError({err: err})))
                 )
             }),
+            take(1)
         );   
     });
 

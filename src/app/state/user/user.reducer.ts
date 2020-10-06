@@ -96,5 +96,11 @@ export const userReducer = createReducer<UserState>(
             isAdmin: action.isAdmin
         }
     }),
+    on(UserAPIActions.LogoutUser, (state, action): UserState => {
+        return {
+            ...state,
+            currentUser: null,
+        }
+    }),
     //==========================================================
 )

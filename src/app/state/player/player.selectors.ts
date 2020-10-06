@@ -46,13 +46,6 @@ export const GetTempPlayerList = createSelector(
 export const GetPlayerBetValue = createSelector(
     getPlayerFeatureState,
     (state: PlayerState, props) =>  {
-        console.log('props',props)
-        const player = state.playerList
-            .find((p: Player) => p.id === props.playerId)
-        console.log('player',player);
-            // ?.tournaments[props.tournamentId].betValue;
-        // console.log('betValue',betValue)
         return 0;
-        // return betValue;
     }
 )

@@ -5,8 +5,8 @@
     </div>
     <div class="col col__betting">
         <div class="col col__betting col__title">${{player.betValue}}</div>
-        <ng-container *ngIf="(maxBetValueUserFullName | async) as fullName">
-            <div class="col col__betting col__subtitle">{{fullName}}</div>
+        <ng-container *ngIf="(maxBetValueUserFullName | async) as user">
+            <div class="col col__betting col__subtitle">{{user.firstName}} {{user.lastName}}</div>
         </ng-container>
     </div>
     <div class="col col__betting">

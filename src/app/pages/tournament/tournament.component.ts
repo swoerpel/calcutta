@@ -26,6 +26,6 @@ export class TournamentComponent implements OnInit {
     ngOnInit(){
         let tournament_id = this.router.routerState.snapshot.url.split('/')[2];
         this.tournament = this.tournamentStore.select(GetCurrentTournament,{tournamentId: tournament_id} )
-        this.tournament.subscribe(t => console.log('tournamentLoaded', t))
+        // this.tournament.subscribe(t => console.log('tournamentLoaded', t))
     }
 }
