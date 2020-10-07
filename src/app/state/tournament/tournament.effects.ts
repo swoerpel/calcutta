@@ -28,8 +28,7 @@ export class TournamentEffects {
 
     getTournaments$ = createEffect(() => {
         return this.actions$.pipe(
-            ofType(ROUTER_NAVIGATED,INIT),
-            // filter((action: any) => action?.payload.event.url === '/tournament-list'),
+              filter((action: any) => action?.payload.event.url === '/tournament-list'),
             switchMap((action) => {
                     return this.tournamentApiService.getTournaments().pipe(
                     map((tournamentList: Tournament[]) => TournamentAPIActions.GetTournamentsSuccess({tournamentList: tournamentList})),
@@ -43,6 +42,8 @@ export class TournamentEffects {
         )   
     });
 
+    // this only allows for a single tournament GET when loading that tournaments view
+    // should call this on a loop and get all
     getTournamentById$ = createEffect((): any => {
         return this.actions$.pipe(
             ofType(ROUTER_NAVIGATED,INIT),
@@ -59,6 +60,7 @@ export class TournamentEffects {
                 )
             }),
         );   
+        
     });
 
     deleteTournament$ = createEffect(() => {

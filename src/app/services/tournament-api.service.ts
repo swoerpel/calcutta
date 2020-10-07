@@ -54,26 +54,37 @@ export class TournamentApiService {
     }
 
     updateTournament(tournament: Tournament): Observable<void>{
-        return from(this.db.collection<any>('tournaments').doc(tournament.id).update(tournament));
+        console.log('UPDATE NOT IMPLEMENTED YET FOR TOURNAMENTS', tournament)
+        return of();
+        // return from(this.db.collection<any>('tournaments').doc(tournament.id).update(tournament));
     }
 
     deleteTournament(tournamentId: string): Observable<void>{
         return from(this.db.collection<any>('tournaments').doc(tournamentId).delete())
     }
 
-    getTournaments(): Observable<Tournament[]>{
-        return from(this.db.collection<any>('tournaments').get()).pipe(
+    getTournaments(): Observable<any[]>{
+        let tournamentsRef = this.db.collection<any>('tournaments');
+        return from(tournamentsRef.get()).pipe(
             map((res) => {
-                let tournamentList = [];
-                res.forEach(d => {
-                    tournamentList.push({
+                let tournamentList = res.docs.map(d => {
+                    return {
                         ...d.data(),
                         id: d.id,
-                    })
+                    }
                 });
-                console.log('tournamentList',tournamentList)
                 return tournamentList
             }),
+            // map((tournaments) => {
+                // console.log('tournaments',tournaments)
+                
+                // let tournamentRefs = tournaments.map((t) => {
+                //     tournamentsRef.doc(t.id).collection('active_players').doc() 
+                // })
+                // console.log('tournamentRefs',tournamentRefs)
+                
+                // return tournaments;
+            // })
         );
     }
 
